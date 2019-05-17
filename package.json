@@ -16,7 +16,7 @@
     "vue-serve": "vue-cli-service serve",
     "vue-build": "vue-cli-service build",
     "nw-serve": "node_modules\\nw\\nwjs\\nw ./Distribution --disable-devtools --disable-raf-throttling --enable-gpu-async-worker-context",
-    "nw-debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-async-worker-context --enable-gpu-benchmarking --load-extension=Scripts/Extensions/ShaderEditorExtension/src",
+    "nw-debug": "node_modules\\nw\\nwjs\\nw . --inspect --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-async-worker-context --enable-gpu-benchmarking --enable-gpu-client-logging --enable-gpu-debugging --load-extension=Scripts/Extensions/ShaderEditorExtension/src",
     "nw-build": "./node_modules/nw-builder/bin/nwbuild -p win64 -v 0.38.3 -o ./Distribution/BUILD-WIN64 -f",
     "postinstall": "npm run setup",
     "setup": "node ./Scripts/setup",
@@ -33,14 +33,15 @@
     "@vue/cli-service": "3.7.0",
     "@vue/eslint-config-standard": "4.0.0",
     "babel-eslint": "10.0.1",
+    "chrome-launcher": "^0.10.7",
     "concurrently": "^4.1.0",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.0.0",
-    "nw-builder": "^3.5.7",
-    "ps-node": "^0.1.6",
+    "nw-builder": "3.5.7",
+    "ps-node": "0.1.6",
     "sass": "1.18.0",
     "sass-loader": "7.1.0",
-    "vue-template-compiler": "2.5.21"
+    "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
     "root": true,

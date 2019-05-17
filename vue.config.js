@@ -6,7 +6,8 @@ module.exports = {
   },
   pages: {
     index: {
-      entry: path.join(__dirname, 'App/main.js')
+      entry: path.join(__dirname, 'App/main.js'),
+      template: path.join(__dirname, 'App/index.html')
     }
   },
   outputDir: 'Distribution'
