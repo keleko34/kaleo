@@ -1,8 +1,8 @@
 {
   "name": "kaleo",
-  "version": "0.0.1",
-  "description": "A self made JS engine",
-  "main": "init.html",
+  "version": "0.0.0",
+  "private": true,
+  "main": "localhost:8080",
   "window": {
     "frame": false,
     "toolbar": false,
@@ -10,29 +10,74 @@
     "height": 720
   },
   "scripts": {
-    "start": "node_modules\\nw\\nwjs\\nw . --disable-devtools --disable-raf-throttling --enable-gpu-async-worker-context",
-    "debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-gpu-async-worker-context --enable-logging --remote-debugging-port=1729 --load-extension=Extensions\\ShaderEditorExtensionold\\src"
+    "start": "npm run vue-build && node ./Scripts/dist && npm run nw-serve",
+    "debug": "node ./Scripts/debug",
+    "build": "npm run vue-build && npm run nw-build",
+    "vue-serve": "vue-cli-service serve",
+    "vue-build": "vue-cli-service build",
+    "nw-serve": "node_modules\\nw\\nwjs\\nw ./Distribution --disable-devtools --disable-raf-throttling --enable-gpu-async-worker-context",
+    "nw-debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-async-worker-context --enable-gpu-benchmarking --load-extension=Scripts/Extensions/ShaderEditorExtension/src",
+    "nw-build": "./node_modules/nw-builder/bin/nwbuild -p win64 -v 0.38.3 -o ./Distribution/BUILD-WIN64 -f",
+    "postinstall": "npm run setup",
+    "setup": "node ./Scripts/setup",
+    "kill": "node ./Scripts/kill"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/keleko34/kaleo.git"
-  },
-  "keywords": [
-    "3d",
-    "engine",
-    "webgl",
-    "kaleoi"
-  ],
-  "author": "keleko34",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/keleko34/kaleo/issues"
-  },
-  "homepage": "https://github.com/keleko34/kaleo#readme",
   "dependencies": {
-    "nw": "^0.38.3-sdk"
+    "core-js": "2.6.5",
+    "nw": "0.38.3-sdk",
+    "vue": "2.6.10"
   },
   "devDependencies": {
-    "nw-builder": "^3.5.7"
-  }
+    "@vue/cli-plugin-babel": "3.7.0",
+    "@vue/cli-plugin-eslint": "3.7.0",
+    "@vue/cli-service": "3.7.0",
+    "@vue/eslint-config-standard": "4.0.0",
+    "babel-eslint": "10.0.1",
+    "concurrently": "^4.1.0",
+    "eslint": "5.16.0",
+    "eslint-plugin-vue": "5.0.0",
+    "nw-builder": "^3.5.7",
+    "ps-node": "^0.1.6",
+    "sass": "1.18.0",
+    "sass-loader": "7.1.0",
+    "vue-template-compiler": "2.5.21"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "browser": true
+    },
+    "extends": [
+      "plugin:vue/base",
+      "@vue/standard"
+    ],
+    "rules": {
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
+      "semi": "off",
+      "keyword-spacing": "off",
+      "brace-style": "off",
+      "one-var": "off"
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
 }
