@@ -1,29 +1,31 @@
 <template>
-  <div id="app">
-    <p>Hello</p>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="Window">
+    <tool-bar />
+    <canvas ref="viewport" class="Viewport"></canvas>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ToolBar from 'organisms/ToolBar'
+
+
 
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  components: { ToolBar },
+  mounted() {
+    this.$root.$alert('viewport', this.$refs.viewport)
+    this.$root.$data.engine.timer = requestAnimationFrame(this.$root.$main);
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .Window {
+    height: inherit;
+    .Viewport {
+      width: 100%;
+      height: calc(100% - 30px);
+    }
+  }
 </style>
