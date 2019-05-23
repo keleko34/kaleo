@@ -12,6 +12,7 @@ export default {
     vue.prototype.$main = function main() {
       const { engine } = this.$data;
       if(engine.isRunning) {
+        engine.renderer.render();
         engine.ctx.drawImage(engine.renderer.renderer, 0, 0, engine.viewport.clientWidth, engine.viewport.clientHeight);
         engine.timer = requestAnimationFrame(this.$main);
       }
@@ -21,7 +22,11 @@ export default {
     }
   },
   created() {
+    /* BACKEND CONTEXT */
+    const BACKEND_RENDERER = window.require(`Engine/init.js`);
+    
     this.$main = this.$main.bind(this);
+    this.$data.renderer = new BACKEND_RENDERER();
     
     this.$listen('pause', () => {
       this.$pause();

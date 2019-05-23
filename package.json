@@ -55,6 +55,9 @@
       "node": true,
       "browser": true
     },
+    "globals": { 
+      "nw": true
+    },
     "extends": [
       "plugin:vue/base",
       "@vue/standard"

@@ -3,7 +3,7 @@ function init()
   this.renderer = document.createElement('canvas');
   this.ctx = this.renderer.getContext('3d');
   this.renderPipeline = [];
-  console.log("hello from backend")
+  console.log('hello from backend', nw.global.$listen)
   return this;
 }
 

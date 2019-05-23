@@ -6,9 +6,6 @@ import eventbus from 'plugins/eventbus'
 import win from 'plugins/window'
 import engine from 'plugins/engine'
 
-/* BACKEND CONTEXT */
-const BACKEND_RENDERER = window.require(`Engine/init.js`);
-
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
@@ -19,6 +16,7 @@ Vue.use(engine);
 new Vue({
   render: h => h(App),
   data: {
+    debug: false,
     win: {
       maximized: false,
       minimized: false,
@@ -33,7 +31,6 @@ new Vue({
         best: 0,
         worst: 0
       },
-      renderer: new BACKEND_RENDERER(),
       viewport: undefined,
       ctx: undefined
     }

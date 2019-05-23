@@ -7,10 +7,7 @@ function loop(e) {
         len = maps.length,
         lenGlobal = mapsGlobal.length;
   let x = 0,
-      item,
-      shift,
-      ctrl,
-      alt;
+      item;
   
   for(x;x<len;x++)
   {

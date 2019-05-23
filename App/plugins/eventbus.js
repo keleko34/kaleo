@@ -47,5 +47,10 @@ export default {
       __alerts[key] = value;
       return this;
     };
+  },
+  created() {
+    nw.global.$listen = this.$listen;
+    nw.global.$unlisten = this.$unlisten;
+    nw.global.$alert = this.$alert;
   }
 }
