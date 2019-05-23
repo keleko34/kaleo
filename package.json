@@ -16,12 +16,12 @@
   "scripts": {
     "start": "npm run vue-build && node ./Scripts/dist && npm run nw-serve",
     "debug": "node ./Scripts/debug",
-    "build": "npm run vue-build && npm run nw-build",
+    "build": "npm run vue-build && node ./Scripts/dist && npm run nw-build",
     "vue-serve": "vue-cli-service serve",
     "vue-build": "vue-cli-service build",
-    "nw-serve": "node_modules\\nw\\nwjs\\nw ./Distribution --disable-devtools --disable-raf-throttling",
+    "nw-serve": "node_modules\\nw\\nwjs\\nw ./Build --disable-raf-throttling",
     "nw-debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-benchmarking --enable-gpu-client-logging --enable-gpu-debugging --load-extension=Scripts/Extensions/ShaderEditorExtension/src,node_modules/nw-vue-devtools/extension",
-    "nw-build": "./node_modules/nw-builder/bin/nwbuild -p win64 -v 0.38.3 -o ./Distribution/BUILD-WIN64 -f",
+    "nw-build": "node ./Scripts/build",
     "postinstall": "npm run setup",
     "setup": "node ./Scripts/setup",
     "kill": "node ./Scripts/kill"
@@ -39,6 +39,7 @@
     "babel-eslint": "10.0.1",
     "chrome-launcher": "^0.10.7",
     "concurrently": "^4.1.0",
+    "copy-webpack-plugin": "^5.0.3",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.0.0",
     "nw-builder": "3.5.7",
@@ -93,5 +94,10 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "babel": {
+    "presets": [
+      "@vue/app"
+    ]
+  }
 }

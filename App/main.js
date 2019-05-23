@@ -7,7 +7,7 @@ import win from 'plugins/window'
 import engine from 'plugins/engine'
 
 /* BACKEND CONTEXT */
-const BACKEND_RENDERER = window.require('Engine/init.js');
+const BACKEND_RENDERER = window.require(`Engine/init.js`);
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;

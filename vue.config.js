@@ -1,4 +1,5 @@
-const path = require('path');
+const path = require('path'),
+      Copy = require('copy-webpack-plugin');
 
 module.exports = {
   configureWebpack: {
@@ -17,7 +18,11 @@ module.exports = {
         '~': path.join(__dirname, '/node_modules'),
         '@': path.join(__dirname, '/App')
       }
-    }
+    },
+    plugins: (process.env.NODE_ENV === 'production' ? [new Copy([
+      { from: 'App/css', to: 'css' },
+      { from: 'Engine', to: 'Engine' }
+    ])] : [])
   },
   devServer: {
     contentBase: path.join(__dirname, 'App')
@@ -28,5 +33,5 @@ module.exports = {
       template: path.join(__dirname, 'App/index.html')
     }
   },
-  outputDir: 'Distribution'
+  outputDir: 'Build'
 }

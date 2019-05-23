@@ -71,7 +71,7 @@ export default {
     position: relative;
     &__title {
       font-family: 'futura-pt';
-      font-size: 13px;
+      font-size: 14px;
       color: aliceblue;
       padding: 0px 8px;
       font-weight: 400;
@@ -86,7 +86,7 @@ export default {
       overflow-y: auto;
       &-item {
         font-family: 'futura-pt';
-        font-size: 13px;
+        font-size: 14px;
         color: aliceblue;
         padding-left: 8px;
         cursor: pointer;

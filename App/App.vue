@@ -8,8 +8,6 @@
 <script>
 import ToolBar from 'organisms/ToolBar'
 
-
-
 export default {
   name: 'app',
   components: { ToolBar },

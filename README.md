@@ -1,29 +1,12 @@
-# kaleo
+# Kaleo
 
 ## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+1. `npm install`
+2. `npm start`
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Thats it!
 
-### Run your tests
-```
-npm run test
-```
+to run in debug mode: `npm run debug`
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+to build the executables: `npm run build`

@@ -6,7 +6,9 @@ pkg.dependencies = undefined;
 pkg.devDependencies = undefined;
 pkg.eslintConfig = undefined;
 pkg.postcss = undefined;
-pkg.browserlist = undefined;
+pkg.browserslist = undefined;
+pkg.babel = undefined;
+pkg['node-remote'] = undefined;
 pkg.main = 'index.html';
 
-fs.writeFileSync('./Distribution/package.json', JSON.stringify(pkg, null, 2))
+fs.writeFileSync('./Build/package.json', JSON.stringify(pkg, null, 2))
