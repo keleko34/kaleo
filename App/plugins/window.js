@@ -65,14 +65,36 @@ export default {
     
     this.$listen('close', () => {
       this.$window.close(true);
-    })
+    });
     
     this.$listen('minimize', () => {
       this.$toggleMinimize();
-    })
+    });
     
     this.$listen('maximize', () => {
       this.$toggleMaximize();
-    })
+    });
+    
+    this.$listen('reload', () => {
+      this.$window.reload();
+    });
+    
+    this.$listen('hard_reload', () => {
+      chrome.runtime.reload();
+    });
+    
+    this.$listen('open_console', () => {
+      if(this.$window.showDevTools)
+      {
+        this.$window.showDevTools();
+        this.$data.console = true;
+      }
+    });
+    
+    this.$listen('check_console', () => {
+      if(this.$window.isDevToolsOpen && !this.$window.isDevToolsOpen()) this.$data.console = false;
+    });
+    
+    document.addEventListener('contextmenu', (e) => { e.preventDefault(); })
   }
 }

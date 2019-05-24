@@ -2,6 +2,7 @@ function loopevent(e)
 {
   const { events } = this,
         len = events.length;
+  
   let x = 0;
   for(x;x<len;x++) { events[x](e); }
 }
@@ -32,6 +33,7 @@ export default class Mouse {
       else if (e.type === 'mousedown')
       {
         if(this.holding[e.button].timer) clearTimeout(this.holding[e.button].timer);
+        e.holding = true;
         loopevent.call(this, e);
         this.holding[e.button].timer = setTimeout(this.event.bind(this), 1);
       }
@@ -44,6 +46,7 @@ export default class Mouse {
     {
       if(e.type === 'mousedown')
       {
+        e.holding = true;
         loopevent.call(this, e);
         this.holding[e.button].hold = true;
         this.holding[e.button].timer = setTimeout(this.event.bind(this), 1);

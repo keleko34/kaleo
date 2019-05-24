@@ -11,14 +11,14 @@ export default {
     
     vue.prototype.$main = function main() {
       const { engine } = this.$data;
-      if(engine.isRunning) {
+      if(engine.isRunning)
+      {
         engine.renderer.render();
         engine.ctx.drawImage(engine.renderer.renderer, 0, 0, engine.viewport.clientWidth, engine.viewport.clientHeight);
-        engine.timer = requestAnimationFrame(this.$main);
       }
-      else {
-        cancelAnimationFrame(engine.timer);
-      }
+      
+      if(this.$data.console) this.$root.$alert('check_console');
+      engine.timer = requestAnimationFrame(this.$main);
     }
   },
   created() {
@@ -26,7 +26,6 @@ export default {
     const BACKEND_RENDERER = window.require(`Engine/init.js`);
     
     this.$main = this.$main.bind(this);
-    this.$data.renderer = new BACKEND_RENDERER();
     
     this.$listen('pause', () => {
       this.$pause();
@@ -39,6 +38,7 @@ export default {
     this.$listen('viewport', (viewport) => {
       this.$data.engine.viewport = viewport;
       this.$data.engine.ctx = viewport.getContext('2d');
+      this.$data.engine.renderer = new BACKEND_RENDERER();
     })
   }
 }

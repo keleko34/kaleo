@@ -16,6 +16,7 @@ Vue.use(engine);
 new Vue({
   render: h => h(App),
   data: {
+    console: false,
     debug: false,
     win: {
       maximized: false,

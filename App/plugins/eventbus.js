@@ -8,7 +8,11 @@ export default {
     vue.prototype.$listen = function listen(key, func) {
       if(!__eventbus[key]) __eventbus[key] = [];
       __eventbus[key].push(func.bind(this));
-      if(__alerts[key]) func(__alerts[key]);
+      if(__alerts[key])
+      {
+        func(__alerts[key]);
+        if(this.$data.console) this.$emit(`listen__${key}`, func, __alerts[key]);
+      }
       return this;
     };
     
@@ -35,6 +39,7 @@ export default {
     /* Alerts all attached listeners of new value */
     vue.prototype.$alert = function alert(key, value) {
       var event = __eventbus[key];
+      if(this.$data.console) this.$emit(`alert__${key}`, value);
       if(event)
       {
         var len = event.length,
@@ -42,11 +47,20 @@ export default {
         for(x;x<len;x++)
         {
           event[x](value);
+          if(this.$data.console) this.$emit(`listen__${key}`, event[x], value);
         }
       }
       __alerts[key] = value;
       return this;
     };
+    
+    /* vue.mixin({
+      methods: {
+        $listen: vue.prototype.$listen,
+        $unlisten: vue.prototype.$unlisten,
+        $alert: vue.prototype.$alert
+      }
+    }) */
   },
   created() {
     nw.global.$listen = this.$listen;

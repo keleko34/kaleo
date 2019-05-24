@@ -4,6 +4,7 @@ function loopevent(e)
 {
   const { events } = this,
         len = events.length;
+  
   let x = 0;
   for(x;x<len;x++) { events[x](e); }
 }
@@ -42,6 +43,7 @@ export default class Keyboard {
         if(this.holding[e.keyCode].timer)
         {
           clearTimeout(this.holding[e.keyCode].timer);
+          e.holding = true;
           loopevent.call(this, e);
           this.holding[e.keyCode].timer = setTimeout(this.event.bind(this), 1);
         }
@@ -49,6 +51,7 @@ export default class Keyboard {
     }
     else if(e.type === 'keydown')
     {
+      e.holding = true;
       loopevent.call(this, e);
       this.holding[e.keyCode].hold = true;
       this.holding[e.keyCode].timer = setTimeout(this.event.bind(this), 1);

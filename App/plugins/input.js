@@ -11,5 +11,8 @@ export default {
   create() {
     this.$keyboard.toggleListeners(true);
     this.$mouse.toggleListeners(true, this.$data.engine.viewport);
+    
+    /* stops windows default functionality */
+    document.addEventListener('keydown', (e) => { e.preventDefault(); })
   }
 }

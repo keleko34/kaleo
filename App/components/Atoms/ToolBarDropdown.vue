@@ -1,7 +1,8 @@
 <template>
-  <div ref="container" v-if="options.length" :class="`ToolBarDropdown ${dFocus && 'ToolBarDropdown--focus'}`">
+  <div ref="container" v-if="options.length" @mouseover="handleHover" :class="`ToolBarDropdown ${dFocus && 'ToolBarDropdown--focus'}`">
     <div
       class="ToolBarDropdown__title"
+      ref="title"
       @click.prevent="toggleOpen"
     >
       <slot></slot>
@@ -38,7 +39,8 @@ function mapOptions(options)
 export default {
   name: 'ToolBarDropdown',
   props: {
-    options: { type: Array, default: () => ([]) }
+    options: { type: Array, default: () => ([]) },
+    canHover: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -47,13 +49,28 @@ export default {
     }
   },
   methods: {
-    toggleOpen() {
-      this.dFocus = !this.dFocus;
+    toggleOpen(toggle) {
+      if(this.dFocus && !(typeof toggle === 'boolean' ? toggle : !this.dFocus))
+      {
+        this.$alert('toolbar_active', false);
+      }
+      this.dFocus = (typeof toggle === 'boolean' ? toggle : !this.dFocus);
       if(!this.dFocus) document.removeEventListener('click', this.handleBlur);
-      if(this.dFocus) document.addEventListener('click', this.handleBlur);
+      if(this.dFocus)
+      {
+        document.addEventListener('click', this.handleBlur);
+        this.$alert('toolbar_active', true);
+      }
+    },
+    handleHover() {
+      if(this.canHover)
+      {
+        document.dispatchEvent(new MouseEvent('click'));
+        this.toggleOpen(true);
+      }
     },
     handleBlur(e) {
-      if(!this.$refs.container.contains(e.target)) this.toggleOpen();
+      if(!this.$refs.container.contains(e.target)) this.toggleOpen(false);
     }
   },
   computed: {

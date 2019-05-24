@@ -16,7 +16,6 @@ export default {
 <style lang="scss">
   .DebugBar {
     position: absolute;
-    z-index: 1;
     height: 24px;
     width: 100%;
     display: flex;

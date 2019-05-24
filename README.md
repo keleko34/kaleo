@@ -19,5 +19,14 @@ The actual window and ui files
 ##### Engine
 All files related to 3d rendering of the scene
 
+##### Game
+All game related assets, models and scripts
+
 ##### Scripts
 Files related to npm scripts
+
+##### Build
+The place where the project is built to, related to `npm start`
+
+##### Distribution
+The place where the final app exe is built to, allows: `win32`, `win64`, and `osx64`
