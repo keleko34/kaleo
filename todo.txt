@@ -1,0 +1,4 @@
+- Add input module to the engine and create a seperate one for the window
+- look into using the width/height of the canvas element as the render chain
+- add the ability to remove debug code on build
+
