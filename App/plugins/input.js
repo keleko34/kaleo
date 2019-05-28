@@ -11,17 +11,6 @@ export default {
     vue.prototype.$unbind = input.clearBinding.bind(input);
   },
   created() {
-    
-    /* TODO: ADD DEBUG REMOVAL */
-    this.$input.ondebugkey = (v) => {
-      console.log('running', v)
-      this.$alert('debug_keys', v);
-    }
-    
-    this.$input.onenvironmentchange = (v) => {
-      this.$alert('environment', v);
-    }
-    
     this.$listen('viewport_created', () => {
       this.$input.keyboard.toggleListeners(true);
       this.$input.mouse.toggleListeners(true, this.$data.engine.viewport);
@@ -40,5 +29,8 @@ export default {
     
     /* stops windows default functionality */
     document.addEventListener('keydown', (e) => { e.preventDefault(); })
+  },
+  extend() {
+    this.$input.$alert = this.$alert.bind(this);
   }
 }

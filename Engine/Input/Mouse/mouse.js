@@ -8,7 +8,7 @@ function loopevent(e, events)
 
 export default class Mouse {
   constructor() {
-    this.codes = ['left', 'middle', 'right'];
+    this.keys = ['leftmouse', 'middlemouse', 'rightmouse'];
     this.events = [];
     this.holding = [];
     
@@ -21,6 +21,7 @@ export default class Mouse {
   event(e) {
     e.preventDefault();
     e.inputCode = e.button;
+    e.inputKey = this.keys[e.button];
     if(this.holding[e.button] === undefined) this.holding[e.button] = {};
     
     if(this.holding[e.button].hold)

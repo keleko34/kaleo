@@ -75,6 +75,21 @@ export default {
       this.$toggleMaximize();
     });
     
+    this.$listen('togglefullscreen', () => {
+      if(this.$data.engine.viewport)
+      {
+        this.$data.win.fullscreen = !this.$data.win.fullscreen;
+        if(this.$data.win.fullscreen)
+        {
+          this.$data.engine.viewport.requestFullscreen();
+        }
+        else
+        {
+          document.exitFullscreen();
+        }
+      }
+    })
+    
     this.$listen('reload', () => {
       this.$window.reload();
     });
@@ -83,16 +98,12 @@ export default {
       chrome.runtime.reload();
     });
     
-    this.$listen('open_console', () => {
+    this.$listen('toggleconsole', () => {
       if(this.$window.showDevTools)
       {
-        this.$window.showDevTools();
-        this.$data.console = true;
+        this.$data.console = !this.$data.console;
+        this.$window[this.$data.console ? 'showDevTools' : 'closeDevTools']();
       }
-    });
-    
-    this.$listen('check_console', () => {
-      this.$data.console = !(this.$window.isDevToolsOpen && !this.$window.isDevToolsOpen());
     });
     
     document.addEventListener('contextmenu', (e) => { e.preventDefault(); })

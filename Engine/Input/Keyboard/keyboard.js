@@ -1,4 +1,4 @@
-import Keycodes from './keycodes.js'
+import Keycodes from '../Keycodes/keycodes.js'
 
 function loopevent(e)
 {
@@ -16,7 +16,7 @@ export default class Keyboard {
     this.events = [];
     
     /* these are all the js keycodes mapped to their corresponding key string name */
-    this.codes = new Keycodes();
+    this.keys = new Keycodes();
     
     /* These say which keys are being held down */
     this.holding = [];
@@ -30,6 +30,7 @@ export default class Keyboard {
   event(e) {
     e.preventDefault();
     e.inputCode = e.keyCode;
+    e.inputKey = this.keys.codes[e.keyCode];
     if(this.holding[e.keyCode] === undefined) this.holding[e.keyCode] = {};
     if(this.holding[e.keyCode].hold)
     {

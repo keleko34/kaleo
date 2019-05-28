@@ -13,7 +13,7 @@ export default {
     }
   },
   mounted() {
-    this.$listen('debug_keys', (v) => {
+    this.$listen('debugkeys', (v) => {
       this.keys = v;
     })
   }

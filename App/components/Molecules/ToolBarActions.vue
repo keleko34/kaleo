@@ -25,21 +25,21 @@ export default {
     return {
       active: false,
       file: [
-        { text: 'Save Project', action: console.log, key: 'CTRL + S' },
+        { text: 'Save Project', action: console.log },
         { text: 'Project Settings', action: console.log },
-        { text: 'Exit', action: () => { this.$root.$alert('close'); } }
+        { text: 'Exit', action: () => { this.$alert('close'); } }
       ],
       debug: [
-        { text: 'Dev Console', action: () => { this.$root.$alert('open_console'); }, key: 'F12' },
-        { text: 'Reload', action: () => { this.$root.$alert('reload'); } },
-        { text: 'Hard Reload (Clears Cache)', action: () => { this.$root.$alert('hard_reload'); } }
+        { text: 'Dev Console', action: () => { this.$alert('toggleconsole'); }, key: 'F12' },
+        { text: 'Reload', action: () => { this.$alert('reload'); } },
+        { text: 'Hard Reload (Clears Cache)', action: () => { this.$alert('hard_reload'); } }
       ],
       view: [
-        { text: 'Fullscreen', action: () => { this.$root.engine.viewport.requestFullscreen(); }, key: 'F11' }
+        { text: 'Fullscreen', action: () => { this.$alert('togglefullscreen') }, key: 'F11' }
       ],
       engine: [
-        { text: 'Pause', action: () => { this.$root.$alert('pause') } },
-        { text: 'Play', action: () => { this.$root.$alert('play') } },
+        { text: 'Pause', action: () => { this.$alert('pause') } },
+        { text: 'Play', action: () => { this.$alert('play') } },
         { text: 'Toggle Camera', action: console.log, key: 'F5' },
         { text: 'Toggle Settings', action: console.log, key: 'ESC' },
         { text: 'Show Debug Menu', action: console.log, key: 'F3' },

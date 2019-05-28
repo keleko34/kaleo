@@ -32,9 +32,8 @@ export default class Input {
     this.keyboard.addListener(this.event);
     this.mouse.addListener(this.event);
     
-    /* debug events */
+    /* debugging */
     this.debug = false;
-    this.debugger = this.debugger.bind(this);
     this.debugKeys = '';
     
     /* extra listeners */
@@ -46,65 +45,94 @@ export default class Input {
   update() {
     const chain = this.render,
           len = chain.length;
+    if(len) console.log('Running commands for: ', chain);
     let x = 0;
-    for(x;x<len;x++){ chain[x](); }
+    for(x;x<len;x++) { chain[x](); }
   }
   
   event(e) {
     const current = (this.currentMapSet[e.type] && this.currentMapSet[e.type][e.inputCode]),
-          global = (this.globalMapSet[e.type] && this.globalMapSet[e.type][e.inputCode]);
+          global = (this.globalMapSet[e.type] && this.globalMapSet[e.type][e.inputCode]),
+          key = e.inputKey.toUpperCase();
     
     if(['keyup', 'mouseup'].indexOf(e.type) !== -1)
     {
-      if(current) this.render.splice(this.render.indexOf(current), 1);
-      if(global) this.render.splice(this.render.indexOf(global), 1);
+      if(this.debug)
+      {
+        const arr = this.debugKeys.split(' + ');
+        switch(arr.length)
+        {
+          case 1:
+            this.debugKeys = '';
+            break;
+          case 2:
+            arr.splice(arr.indexOf(key), 1);
+            this.debugKeys = arr.join('');
+            break;
+          default:
+            arr.splice(arr.indexOf(key), 1);
+            this.debugKeys = arr.join(' + ');
+        }
+        this.$alert('debugkeys', this.debugKeys);
+      }
+      
+      if(current)
+      {
+        if(current.immediate)
+        {
+          current.action(e);
+        }
+        else if(this.render.indexOf(current.action) !== -1)
+        {
+          this.render.splice(this.render.indexOf(current.action), 1);
+        }
+      }
+      if(global)
+      {
+        if(global.immediate)
+        {
+          global.action(e);
+        }
+        else if(this.render.indexOf(global.action) !== -1)
+        {
+          this.render.splice(this.render.indexOf(global.action), 1);
+        }
+      }
     }
     else
     {
-      if(current) this.render.push(current);
-      if(global) this.render.push(current);
-    }
-  }
-  
-  debugger(e) {
-    const key = this.keyboard.codes[e.inputCode].toUpperCase();
-    if(['mousedown', 'keydown'].indexOf(e.type) !== -1)
-    {
-      this.debugKeys = (!this.debugKeys ? key : this.debugKeys + ' + ' + key);
-      this.ondebugkey(this.debugKeys);
-    }
-    else if(['mouseup', 'keyup'].indexOf(e.type) !== -1)
-    {
-      const arr = this.debugKeys.split(' + ');
-      switch(arr.length)
+      if(['keydown', 'mousedown'].indexOf(e.type) !== -1 && this.debug && this.debugKeys.indexOf(key) === -1)
       {
-        case 1:
-          this.debugKeys = '';
-          break;
-        case 2:
-          arr.splice(arr.indexOf(key), 1);
-          this.debugKeys = arr.join('');
-          break;
-        default:
-          arr.splice(arr.indexOf(key), 1);
-          this.debugKeys = arr.join(' + ');
+        this.debugKeys = (!this.debugKeys ? key : this.debugKeys + ' + ' + key);
+        this.$alert('debugkeys', this.debugKeys);
       }
-      this.ondebugkey(this.debugKeys);
+      if(current)
+      {
+        if(current.immediate)
+        {
+          current.action(e);
+        }
+        else
+        {
+          this.render.push(current.action);
+        }
+      }
+      if(global)
+      {
+        if(global.immediate)
+        {
+          global.action(e);
+        }
+        else
+        {
+          this.render.push(global.action);
+        }
+      }
     }
   }
   
   toggleDebug(toggle) {
-    const debug = (typeof toggle === 'boolean' ? toggle : !this.debug);
-    if(debug)
-    {
-      this.keyboard.addListener(this.debugger);
-      this.mouse.addListener(this.debugger);
-    }
-    else
-    {
-      this.keyboard.removeListener(this.debugger);
-      this.mouse.removeListener(this.debugger);
-    }
+    this.debug = (typeof toggle === 'boolean' ? toggle : !this.debug);
   }
   
   setEnvironment(env) {
@@ -112,7 +140,7 @@ export default class Input {
     {
       this.environment = env;
       this.currentMapSet = this.events[env];
-      this.onenvironmentchange(env);
+      this.$alert('environment', env);
     }
     return this;
   }
@@ -121,7 +149,9 @@ export default class Input {
     if(this.environments.indexOf(env) === -1)
     {
       this.environments.push(env);
-      this.events[env] = {};
+      this.events[env] = {
+        dictionary: {}
+      };
     }
     return this;
   }
@@ -144,18 +174,18 @@ export default class Input {
     'shift': Boolean
     'alt': Boolean
   */
-  setBinding(name, key, func, environment, type) {
+  setBinding(name, key, func, environment, type, immediate) {
     environment = (environment || this.environment);
-    type = (type || (key.indexof('mouse') !== -1 ? 'mousedown' : 'keydown'))
-    if(this.environments[environment])
+    type = (type || (key.indexOf('mouse') !== -1 ? 'mousedown' : 'keydown'))
+    if(this.environments[environment] || environment === '*')
     {
-      const env = this.environments[environment];
-      const keyCode = this.keyboard.codes[key];
+      const env = this.events[environment];
+      const keyCode = this.keyboard.keys.codes.indexOf(key.toLowerCase());
       
       if(env.dictionary[name]) this.clearBinding(name, environment);
       
       if(!env[type]) env[type] = {};
-      if(!env[type][keyCode]) env[type][keyCode] = func;
+      if(!env[type][keyCode]) env[type][keyCode] = { action: func, immediate, name };
       env.dictionary[name] = { type, keyCode };
     }
   }

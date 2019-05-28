@@ -1,15 +1,17 @@
 <template>
   <div class="DebugBar">
+    <debug-fps class="FPS" />
     <debug-keys />
   </div>
 </template>
 
 <script>
-import DebugKeys from 'molecules/DebugKeys'
+import DebugFps from 'molecules/DebugFPS';
+import DebugKeys from 'molecules/DebugKeys';
 
 export default {
   name: 'DebugBar',
-  components: { DebugKeys }
+  components: { DebugKeys, DebugFps }
 }
 </script>
 
@@ -21,5 +23,9 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    .FPS {
+      flex: 1 1;
+      margin-left: 8px;
+    }
   }
 </style>

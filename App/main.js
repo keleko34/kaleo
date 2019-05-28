@@ -4,8 +4,9 @@ import App from './App.vue'
 /* GLOBALS */
 import eventbus from 'plugins/eventbus'
 import win from 'plugins/window'
-import input from 'plugins/input'
 import engine from 'plugins/engine'
+import input from 'plugins/input'
+import fps from 'plugins/fps'
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
@@ -14,6 +15,7 @@ Vue.use(eventbus);
 Vue.use(win);
 Vue.use(engine);
 Vue.use(input);
+Vue.use(fps);
 
 new Vue({
   render: h => h(App),
@@ -23,7 +25,8 @@ new Vue({
     win: {
       maximized: false,
       minimized: false,
-      locked: false
+      locked: false,
+      fullscreen: false
     },
     engine: {
       timer: undefined,
@@ -40,6 +43,7 @@ new Vue({
   },
   created() {
     Vue._installedPlugins.forEach((plugin) => {
+      if(plugin.extend) plugin.extend.call(this);
       if(plugin.created) plugin.created.call(this);
     })
   }

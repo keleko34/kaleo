@@ -42,6 +42,18 @@ export default {
     options: { type: Array, default: () => ([]) },
     canHover: { type: Boolean, default: false }
   },
+  mounted() {
+    const len = this.options.length;
+    
+    let x = 0,
+        opt;
+    
+    for(x;x<len;x++)
+    {
+      opt = this.options[x];
+      if(opt.key) this.$bind(opt.text, opt.key, opt.action, '*', 'keyup', true);
+    }
+  },
   data() {
     return {
       dFocus: false,
