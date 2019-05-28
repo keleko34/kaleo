@@ -23,7 +23,7 @@ export default {
   },
   created() {
     /* BACKEND CONTEXT */
-    const BACKEND_RENDERER = window.require(`Engine/init.js`);
+    const BACKEND_RENDERER = window.require('Engine/main.js');
     
     this.$main = this.$main.bind(this);
     
@@ -38,7 +38,7 @@ export default {
     this.$listen('viewport_created', (viewport) => {
       this.$data.engine.viewport = viewport;
       this.$data.engine.ctx = viewport.getContext('2d');
-      this.$data.engine.renderer = new BACKEND_RENDERER();
+      this.$data.engine.renderer = BACKEND_RENDERER.renderer;
     })
   }
 }
