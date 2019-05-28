@@ -19,42 +19,30 @@ export default class Keyboard {
     this.codes = new Keycodes();
     
     /* These say which keys are being held down */
-    this.holding = {};
+    this.holding = [];
     
     /* toggle on the key listeners */
     this.toggledListeners = false;
+    
+    this.event = this.event.bind(this);
   }
   
   event(e) {
     e.preventDefault();
-    e.stopPropagation();
+    e.inputCode = e.keyCode;
     if(this.holding[e.keyCode] === undefined) this.holding[e.keyCode] = {};
     if(this.holding[e.keyCode].hold)
     {
       if(e.type === 'keyup')
       {
         this.holding[e.keyCode].hold = false;
-        if(this.holding[e.keyCode].timer) clearTimeout(this.holding[e.keyCode].timer);
-        this.holding.splice(e.keyCode, 1);
         loopevent.call(this, e);
-      }
-      else if(e.type === 'keydown')
-      {
-        if(this.holding[e.keyCode].timer)
-        {
-          clearTimeout(this.holding[e.keyCode].timer);
-          e.holding = true;
-          loopevent.call(this, e);
-          this.holding[e.keyCode].timer = setTimeout(this.event.bind(this), 1);
-        }
       }
     }
     else if(e.type === 'keydown')
     {
-      e.holding = true;
       loopevent.call(this, e);
       this.holding[e.keyCode].hold = true;
-      this.holding[e.keyCode].timer = setTimeout(this.event.bind(this), 1);
     }
   }
   
@@ -73,12 +61,12 @@ export default class Keyboard {
     return this;
   }
   
-  addKeyListener(func) {
+  addListener(func) {
     if(typeof func === 'function') this.events.push(func);
     return this;
   }
   
-  removeKeyListener(func) {
+  removeListener(func) {
     if(typeof func === 'function') {
       const { events } = this,
             stringFunc = func.toString(),

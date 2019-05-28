@@ -92,7 +92,7 @@ export default {
     });
     
     this.$listen('check_console', () => {
-      if(this.$window.isDevToolsOpen && !this.$window.isDevToolsOpen()) this.$data.console = false;
+      this.$data.console = !(this.$window.isDevToolsOpen && !this.$window.isDevToolsOpen());
     });
     
     document.addEventListener('contextmenu', (e) => { e.preventDefault(); })

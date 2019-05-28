@@ -11,7 +11,9 @@ export default {
       if(__alerts[key])
       {
         func(__alerts[key]);
-        if(this.$data.console) this.$emit(`listen__${key}`, func, __alerts[key]);
+        
+        /* TODO: ADD DEBUG REMOVAL */
+        if(key !== 'render') this.$emit(`listen__${key}`, func, __alerts[key]);
       }
       return this;
     };
@@ -39,7 +41,9 @@ export default {
     /* Alerts all attached listeners of new value */
     vue.prototype.$alert = function alert(key, value) {
       var event = __eventbus[key];
-      if(this.$data.console) this.$emit(`alert__${key}`, value);
+      
+      /* TODO: ADD DEBUG REMOVAL */
+      if(key !== 'render') this.$emit(`alert__${key}`, value);
       if(event)
       {
         var len = event.length,
@@ -47,7 +51,9 @@ export default {
         for(x;x<len;x++)
         {
           event[x](value);
-          if(this.$data.console) this.$emit(`listen__${key}`, event[x], value);
+          
+          /* TODO: ADD DEBUG REMOVAL */
+          if(key !== 'render') this.$emit(`listen__${key}`, event[x], value);
         }
       }
       __alerts[key] = value;

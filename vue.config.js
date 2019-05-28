@@ -13,6 +13,7 @@ module.exports = {
         'globals': path.join(__dirname, '/App/globals'),
         'plugins': path.join(__dirname, '/App/plugins'),
         'assets': path.join(__dirname, '/App/assets'),
+        'engine': path.join(__dirname, '/Engine'),
 
         /* Fancy */
         '~': path.join(__dirname, '/node_modules'),

@@ -4,8 +4,7 @@
     <tool-bar-dropdown :canHover="active">Edit</tool-bar-dropdown>
     <tool-bar-dropdown :canHover="active" :options="view">View</tool-bar-dropdown>
     <tool-bar-dropdown :canHover="active" :options="engine">Engine</tool-bar-dropdown>
-    <tool-bar-dropdown :canHover="active" :options="window">Window</tool-bar-dropdown>
-    <tool-bar-dropdown :canHover="active">Debug</tool-bar-dropdown>
+    <tool-bar-dropdown :canHover="active" :options="debug">Debug</tool-bar-dropdown>
     <tool-bar-dropdown :canHover="active">Help</tool-bar-dropdown>
   </div>
 </template>
@@ -27,13 +26,13 @@ export default {
       active: false,
       file: [
         { text: 'Save Project', action: console.log, key: 'CTRL + S' },
-        { text: 'Project Settings', action: console.log }
+        { text: 'Project Settings', action: console.log },
+        { text: 'Exit', action: () => { this.$root.$alert('close'); } }
       ],
-      window: [
+      debug: [
         { text: 'Dev Console', action: () => { this.$root.$alert('open_console'); }, key: 'F12' },
         { text: 'Reload', action: () => { this.$root.$alert('reload'); } },
-        { text: 'Hard Reload (Clears Cache)', action: () => { this.$root.$alert('hard_reload'); } },
-        { text: 'Exit', action: () => { this.$root.$alert('close'); } }
+        { text: 'Hard Reload (Clears Cache)', action: () => { this.$root.$alert('hard_reload'); } }
       ],
       view: [
         { text: 'Fullscreen', action: () => { this.$root.engine.viewport.requestFullscreen(); }, key: 'F11' }

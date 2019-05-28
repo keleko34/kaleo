@@ -4,6 +4,7 @@ import App from './App.vue'
 /* GLOBALS */
 import eventbus from 'plugins/eventbus'
 import win from 'plugins/window'
+import input from 'plugins/input'
 import engine from 'plugins/engine'
 
 Vue.config.productionTip = false;
@@ -12,6 +13,7 @@ Vue.config.devtools = true;
 Vue.use(eventbus);
 Vue.use(win);
 Vue.use(engine);
+Vue.use(input);
 
 new Vue({
   render: h => h(App),

@@ -11,13 +11,13 @@ export default {
     
     vue.prototype.$main = function main() {
       const { engine } = this.$data;
+      
       if(engine.isRunning)
       {
         engine.renderer.render();
         engine.ctx.drawImage(engine.renderer.renderer, 0, 0, engine.viewport.clientWidth, engine.viewport.clientHeight);
       }
-      
-      if(this.$data.console) this.$root.$alert('check_console');
+      this.$alert('render');
       engine.timer = requestAnimationFrame(this.$main);
     }
   },
@@ -35,7 +35,7 @@ export default {
       this.$play();
     })
     
-    this.$listen('viewport', (viewport) => {
+    this.$listen('viewport_created', (viewport) => {
       this.$data.engine.viewport = viewport;
       this.$data.engine.ctx = viewport.getContext('2d');
       this.$data.engine.renderer = new BACKEND_RENDERER();

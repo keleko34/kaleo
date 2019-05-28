@@ -3,6 +3,11 @@ export default class Keycodes {
     var x =0,
         i = 0;
     
+    /* Mouse Key Codes */
+    this[0] = 'leftmouse';
+    this[1] = 'middlemouse';
+    this[2] = 'rightmouse';
+    
     /* Insert Char Codes a-z */
     for(x=65;x<91;x++) {
       if(this[x] === undefined) {

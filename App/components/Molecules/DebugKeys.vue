@@ -1,24 +1,38 @@
 <template>
   <div class="DebugKeys">
-    CTRL + K
+    {{keys}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DebugKeys'
+  name: 'DebugKeys',
+  data() {
+    return {
+      keys: ''
+    }
+  },
+  mounted() {
+    this.$listen('debug_keys', (v) => {
+      this.keys = v;
+    })
+  }
 }
 </script>
 
 <style lang="scss">
   .DebugKeys {
-    width: 100px;
-    text-align: center;
+    max-width: 200px;
+    text-align: right;
+    padding-right: 8px;
     height: 100%;
     line-height: 24px;
     font-family: 'Open Sans';
     color: rgba(240, 248, 255, 0.4);
     font-weight: 700;
     font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 </style>
