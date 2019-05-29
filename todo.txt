@@ -3,4 +3,6 @@
 - add the ability to remove debug code on build
 - distinguish who owns the alerts and the listeners more
 - add a settings menu for binding keys, allow saving of the binds
+- $broadcast to communicate between FE and BE
+- Simplify classes into the plugins
 

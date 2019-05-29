@@ -7,31 +7,32 @@ module.exports = {
     resolve: {
       alias: {
         /* Standard */
-        'atoms': path.join(__dirname, '/App/components/Atoms'),
-        'molecules': path.join(__dirname, '/App/components/Molecules'),
-        'organisms': path.join(__dirname, '/App/components/Organisms'),
-        'globals': path.join(__dirname, '/App/globals'),
-        'plugins': path.join(__dirname, '/App/plugins'),
-        'assets': path.join(__dirname, '/App/assets'),
-        'engine': path.join(__dirname, '/Engine'),
+        'atoms': path.join(__dirname, 'Platform/App/components/Atoms'),
+        'molecules': path.join(__dirname, 'Platform/App/components/Molecules'),
+        'organisms': path.join(__dirname, 'Platform/App/components/Organisms'),
+        'helpers': path.join(__dirname, 'Platform/App/helpers'),
+        'plugins': path.join(__dirname, 'Platform/App/plugins'),
+        'assets': path.join(__dirname, 'Platform/App/assets'),
+        'css': path.join(__dirname, 'Platform/App/css'),
+        'engine': path.join(__dirname, 'Platform/Engine'),
 
         /* Fancy */
-        '~': path.join(__dirname, '/node_modules'),
-        '@': path.join(__dirname, '/App')
+        '~': path.join(__dirname, 'node_modules'),
+        '@': path.join(__dirname, 'Platform/App')
       }
     },
     plugins: (process.env.NODE_ENV === 'production' ? [new Copy([
-      { from: 'App/css', to: 'css' },
-      { from: 'Engine', to: 'Engine' }
+      { from: 'Platform/App/css', to: 'css' },
+      { from: 'Platform/Engine', to: 'Engine' }
     ])] : [])
   },
   devServer: {
-    contentBase: path.join(__dirname, 'App')
+    contentBase: path.join(__dirname, 'Platform/App')
   },
   pages: {
     index: {
-      entry: path.join(__dirname, 'App/main.js'),
-      template: path.join(__dirname, 'App/index.html')
+      entry: path.join(__dirname, 'Platform/App/main.js'),
+      template: path.join(__dirname, 'Platform/App/index.html')
     }
   },
   outputDir: 'Build'

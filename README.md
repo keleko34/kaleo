@@ -13,20 +13,24 @@ to build the executables: `npm run build`
 
 ## Project structure
 
-##### App
-The actual window and ui files
+Platform
+|
+|-- App (files related to the window and gui functionality)
+|
+|-- Engine (files related to 3d rendering of the scene)
+|
+|-- Game (game related assets, models, and scripts)
 
-##### Engine
-All files related to 3d rendering of the scene
 
-##### Game
-All game related assets, models and scripts
+## Scripts
 
-##### Scripts
-Files related to npm scripts
+- start (Builds the project to /Build and runs nwjs fromt hat folder)
+- debug (Starts a Vue server and runs nwjs against localhost url)
+- build (Builds the project to /Build and then uses nwjs to package it into an exe in /Distribution)
+- setup (Copies necessary directx files for windows to the nw folder)
+- kill (Kills all processes related to the application)
 
-##### Build
-The place where the project is built to, related to `npm start`
+## Distribution
+The app will be built into a final runnable executable in the /Distribution folder.
 
-##### Distribution
-The place where the final app exe is built to, allows: `win32`, `win64`, and `osx64`
+The current builds are: `win32`, `win64`, and `osx64`
