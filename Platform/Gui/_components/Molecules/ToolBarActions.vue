@@ -39,10 +39,10 @@ export default {
         { text: 'Fullscreen', action: () => { this.$alert('togglefullscreen') }, key: 'F11' }
       ],
       engine: [
-        { text: 'Pause', action: () => { this.$alert('pause') } },
-        { text: 'Play', action: () => { this.$alert('play') } },
+        { text: 'Pause', action: () => { this.$alert('stop') } },
+        { text: 'Play', action: () => { this.$alert('start') } },
         { text: 'Toggle Camera', action: console.log, key: 'F5' },
-        { text: 'Toggle Settings', action: console.log, key: 'ESC' },
+        { text: 'Toggle Settings', action: () => { this.$alert('togglesettings') }, key: 'ESC' },
         { text: 'Show Debug Menu', action: console.log, key: 'F3' },
         { text: 'Show Debug Info', action: console.log }
       ]

@@ -28,6 +28,7 @@ export default {
     display: flex;
     flex-direction: row;
     height: 100%;
+    width: 150px;
     line-height: 24px;
     font-family: 'Open Sans';
     color: rgba(240, 248, 255, 0.6);

@@ -5,11 +5,13 @@ const Engine = require('./Engine'),
 const eventbus = require('./_plugins/eventbus'),
       /* TODO: Need to remove on build */
       fps = require('./Debug/fps'),
-      keys = require('./Debug/keys');
+      keys = require('./Debug/keys'),
+      antialias = require('./Core/antialias');
 
 Engine.use(eventbus);
 Engine.use(fps);
 Engine.use(keys);
+Engine.use(antialias);
 
 global.main = new Engine({
   /* TODO: Need to remove on build */

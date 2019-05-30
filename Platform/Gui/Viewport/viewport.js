@@ -3,6 +3,7 @@ class Viewport {
     this._viewport = undefined;
     this.ctx = undefined;
     this.isRunning = true;
+    this.timer = null;
     this.engine = window.require('Platform/Engine/main.js');
     this.main = this.main.bind(this);
   }
@@ -21,13 +22,14 @@ class Viewport {
     {
       this.engine.renderer.render();
       if(this.viewport) this.ctx.drawImage(this.engine.renderer.canvas, 0, 0, this.viewport.clientWidth, this.viewport.clientHeight);
-      requestAnimationFrame(this.main);
+      this.timer = requestAnimationFrame(this.main);
     }
   }
   
   start() {
     this.isRunning = true;
-    requestAnimationFrame(this.main);
+    if(this.timer) cancelAnimationFrame(this.timer);
+    this.timer = requestAnimationFrame(this.main);
   }
   
   stop() {

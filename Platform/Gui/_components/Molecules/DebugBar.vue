@@ -1,17 +1,19 @@
 <template>
   <div class="DebugBar">
     <debug-fps class="FPS" />
+    <debug-aa class="AA" />
     <debug-keys />
   </div>
 </template>
 
 <script>
 import DebugFps from 'atoms/DebugFPS';
+import DebugAa from 'atoms/DebugAA';
 import DebugKeys from 'atoms/DebugKeys';
 
 export default {
   name: 'DebugBar',
-  components: { DebugKeys, DebugFps }
+  components: { DebugKeys, DebugFps, DebugAa }
 }
 </script>
 
@@ -21,10 +23,17 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: left;
+    
     .FPS {
-      flex: 1 1;
       margin-left: 8px;
     }
+    .AA {
+      margin-left: 8px;
+    }
+  }
+  
+  .DebugBar :nth-last-child(2) {
+    flex: 1 1;
   }
 </style>
