@@ -1,7 +1,7 @@
 class Renderer {
   constructor() {
-    this.renderer = document.createElement('canvas');
-    this.ctx = this.renderer.getContext('3d');
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('3d');
     this.pipeline = [];
   }
   

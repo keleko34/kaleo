@@ -25,7 +25,7 @@ export default {
     return {
       active: false,
       file: [
-        { text: 'Save Project', action: console.log },
+        { text: 'Save Project', action: console.log, key: 'CTRL + S' },
         { text: 'Project Settings', action: console.log },
         { text: 'Exit', action: () => { this.$alert('close'); } }
       ],

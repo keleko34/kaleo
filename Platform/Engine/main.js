@@ -1,24 +1,25 @@
 const Engine = require('./Engine'),
-      Renderer = require('./Renderer');
+      Renderer = require('./Renderer/Renderer');
 
 /* GLOBALS */
-const eventbus = require('./plugins/eventbus'),
-      fps = require('./plugins/fps'),
-      keys = require('./plugins/keys');
+const eventbus = require('./_plugins/eventbus'),
+      /* TODO: Need to remove on build */
+      fps = require('./Debug/fps'),
+      keys = require('./Debug/keys');
 
 Engine.use(eventbus);
 Engine.use(fps);
 Engine.use(keys);
 
 global.main = new Engine({
-  /* Need to remove on build */
+  /* TODO: Need to remove on build */
   debug: true,
   renderer: new Renderer(),
   data: {},
   created() {
     Engine._installedPlugins.forEach((plugin) => {
-      if(plugin.extend) plugin.extend(this);
-      if(plugin.created) plugin.created(this);
+      if(plugin.extend) plugin.extend.call(this);
+      if(plugin.created) plugin.created.call(this);
       if(plugin.update) this.renderer.pipe(plugin.update.bind(plugin));
     })
   }

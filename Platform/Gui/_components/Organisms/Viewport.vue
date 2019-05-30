@@ -29,8 +29,7 @@ export default {
     this.$mouse.attach(this.$refs.viewport);
     this.$listen('togglefullscreen', this.toggleFullscreen);
     
-    this.$alert('viewport_created', this.$refs.canvas);
-    this.$root.$data.engine.timer = requestAnimationFrame(this.$root.$main);
+    this.$renderer.canvas = this.$refs.viewport;
   }
 }
 </script>

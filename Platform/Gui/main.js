@@ -2,10 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 
 /* GLOBALS */
-import eventbus from 'plugins/eventbus'
-import window from '@/Window/window'
-import input from '@/Input/input'
-import engine from 'plugins/engine'
+import eventbus from '_plugins/eventbus';
+import window from '@/Window/window';
+import input from '@/Input/input';
+import viewport from '@/Viewport/viewport';
 
 Vue.config.productionTip = false;
 /* TODO: TOGGLE FOR BUILD */
@@ -13,26 +13,14 @@ Vue.config.devtools = true;
 
 Vue.use(eventbus);
 Vue.use(window);
-Vue.use(engine);
+Vue.use(viewport);
 Vue.use(input);
 
 new Vue({
   render: h => h(App),
   data: {
     console: false,
-    debug: false,
-    win: {
-      maximized: false,
-      minimized: false,
-      locked: false,
-      fullscreen: false
-    },
-    engine: {
-      timer: undefined,
-      isRunning: true,
-      viewport: undefined,
-      ctx: undefined
-    }
+    debug: false
   },
   created() {
     Vue._installedPlugins.forEach((plugin) => {

@@ -7,32 +7,31 @@ module.exports = {
     resolve: {
       alias: {
         /* Standard */
-        'atoms': path.join(__dirname, 'Platform/App/components/Atoms'),
-        'molecules': path.join(__dirname, 'Platform/App/components/Molecules'),
-        'organisms': path.join(__dirname, 'Platform/App/components/Organisms'),
-        'helpers': path.join(__dirname, 'Platform/App/helpers'),
-        'plugins': path.join(__dirname, 'Platform/App/plugins'),
-        'assets': path.join(__dirname, 'Platform/App/assets'),
-        'css': path.join(__dirname, 'Platform/App/css'),
+        'atoms': path.join(__dirname, 'Platform/Gui/_components/Atoms'),
+        'molecules': path.join(__dirname, 'Platform/Gui/_components/Molecules'),
+        'organisms': path.join(__dirname, 'Platform/Gui/_components/Organisms'),
+        '_helpers': path.join(__dirname, 'Platform/Gui/_helpers'),
+        '_plugins': path.join(__dirname, 'Platform/Gui/_plugins'),
+        '_assets': path.join(__dirname, 'Platform/Gui/_assets'),
         'engine': path.join(__dirname, 'Platform/Engine'),
 
         /* Fancy */
         '~': path.join(__dirname, 'node_modules'),
-        '@': path.join(__dirname, 'Platform/App')
+        '@': path.join(__dirname, 'Platform/Gui/')
       }
     },
     plugins: (process.env.NODE_ENV === 'production' ? [new Copy([
-      { from: 'Platform/App/css', to: 'css' },
-      { from: 'Platform/Engine', to: 'Engine' }
+      { from: 'Platform/Gui/_assets', to: '_assets' },
+      { from: 'Platform/Engine', to: 'Platform/Engine' }
     ])] : [])
   },
   devServer: {
-    contentBase: path.join(__dirname, 'Platform/App')
+    contentBase: path.join(__dirname, 'Platform/Gui')
   },
   pages: {
     index: {
-      entry: path.join(__dirname, 'Platform/App/main.js'),
-      template: path.join(__dirname, 'Platform/App/index.html')
+      entry: path.join(__dirname, 'Platform/Gui/main.js'),
+      template: path.join(__dirname, 'Platform/Gui/index.html')
     }
   },
   outputDir: 'Build'

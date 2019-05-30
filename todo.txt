@@ -1,8 +1,7 @@
-- Add input module to the engine and create a seperate one for the window
 - look into using the width/height of the canvas element as the render chain
 - add the ability to remove debug code on build
-- distinguish who owns the alerts and the listeners more
 - add a settings menu for binding keys, allow saving of the binds
-- $broadcast to communicate between FE and BE
-- Simplify classes into the plugins
+- change inputs to allow registering of an action and then later bind to a key
+- add seperate gui context in input
+- move engine plugin entirely to the engine
 

@@ -15,7 +15,7 @@ to build the executables: `npm run build`
 
 Platform
 |
-|-- App (files related to the window and gui functionality)
+|-- Gui (files related to the window and gui functionality)
 |
 |-- Engine (files related to 3d rendering of the scene)
 |

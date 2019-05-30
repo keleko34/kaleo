@@ -1,4 +1,4 @@
-import Debug from 'helpers/debug';
+import Debug from '_helpers/debug';
 
 const __alerts = {},
       __eventbus = {};

@@ -51,17 +51,15 @@ export default {
     this.options.forEach((opt) => {
       if(opt.key)
       {
-        this.$alert('bind', {
+        this.$alert('register_input', {
           name: opt.text,
-          environment: '*',
+          environment: 'gui',
           key: opt.key.toLowerCase().replace(/(ctrl)|(alt)|(shift)|[\s+]/g, ''),
-          options: {
-            action: opt.action,
-            once: true,
-            shiftKey: (opt.key.toLowerCase().indexOf('shift') !== -1),
-            ctrlKey: (opt.key.toLowerCase().indexOf('ctrl') !== -1),
-            altKey: (opt.key.toLowerCase().indexOf('alt') !== -1)
-          }
+          toggle: true,
+          action: opt.action,
+          shiftKey: (opt.key.toLowerCase().indexOf('shift') !== -1),
+          ctrlKey: (opt.key.toLowerCase().indexOf('ctrl') !== -1),
+          altKey: (opt.key.toLowerCase().indexOf('alt') !== -1)
         })
       }
     })

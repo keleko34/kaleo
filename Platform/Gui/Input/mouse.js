@@ -1,4 +1,4 @@
-import Keycodes from 'helpers/keycodes';
+import Keycodes from '_helpers/keycodes';
 
 export default class Mouse {
   constructor() {

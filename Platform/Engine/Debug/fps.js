@@ -45,8 +45,8 @@ class FPS {
     engine.prototype.$fps = this;
   }
   
-  extend(engine) {
-    this.$broadcast = engine.$broadcast.bind(engine);
+  extend() {
+    this.$fps.$broadcast = this.$broadcast.bind(this);
   }
 }
 
