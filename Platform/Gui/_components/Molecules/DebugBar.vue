@@ -1,19 +1,34 @@
 <template>
-  <div class="DebugBar">
+  <div v-if="dDebug" class="DebugBar">
     <debug-fps class="FPS" />
-    <debug-aa class="AA" />
     <debug-keys />
   </div>
 </template>
 
 <script>
 import DebugFps from 'atoms/DebugFPS';
-import DebugAa from 'atoms/DebugAA';
 import DebugKeys from 'atoms/DebugKeys';
 
 export default {
   name: 'DebugBar',
-  components: { DebugKeys, DebugFps, DebugAa }
+  components: { DebugKeys, DebugFps },
+  mounted() {
+    this.$listen('toggledebug', toggle => (this.toggleDebug(toggle)));
+  },
+  data() {
+    const { engine } = nw.global.settings;
+    return {
+      dDebug: (!!engine.D_DEBUG)
+    };
+  },
+  methods: {
+    toggleDebug(toggle) {
+      const { engine } = nw.global.settings;
+      this.dDebug = (toggle !== undefined ? toggle : !this.dDebug);
+      engine.D_DEBUG = (this.dDebug ? 1 : 0);
+      engine.save();
+    }
+  }
 }
 </script>
 
@@ -27,13 +42,7 @@ export default {
     
     .FPS {
       margin-left: 8px;
+      flex: 1 1;
     }
-    .AA {
-      margin-left: 8px;
-    }
-  }
-  
-  .DebugBar :nth-last-child(2) {
-    flex: 1 1;
   }
 </style>

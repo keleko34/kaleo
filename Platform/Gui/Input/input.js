@@ -79,9 +79,14 @@ class Input {
     }
   }
   
-  register(name, environment, options) {
+  register(name, environment, options)
+  {
+    const { input } = nw.global.settings;
+    
     if(this.environments.indexOf(environment) !== -1)
     {
+      options.environment = environment;
+      options.name = name;
       if(environment === 'gui' && (options && options.key))
       {
         if(this.registry[environment][name]) this.unregister(name, environment);
@@ -94,10 +99,38 @@ class Input {
       }
       else
       {
+        if(!input.I_REGISTRY[environment]) input.I_REGISTRY[environment] = {};
+        
+        const saved = input.I_REGISTRY[environment][name];
+        
         options = (options || {});
         options.active = false;
-        options.key = -1;
-        options.index = -1;
+        
+        if(saved)
+        {
+          options.key = saved.key;
+          options.index = saved.index;
+          options.toggle = saved.toggle;
+          options.shiftKey = saved.shiftKey;
+          options.ctrlKey = saved.ctrlKey;
+          options.altKey = saved.altKey;
+        }
+        else
+        {
+          options.key = -1;
+          options.index = -1;
+          
+          input.I_REGISTRY[environment][name] = {
+            name: options.name,
+            key: options.key,
+            index: options.index,
+            toggle: options.toggle,
+            shiftKey: options.shiftKey,
+            ctrlKey: options.ctrlKey,
+            altKey: options.altKey
+          }
+          input.save();
+        }
 
         if(this.active[name]) this.unregister(name, this.active[name].environment);
 
@@ -115,11 +148,19 @@ class Input {
   }
   
   unregister(name, environment) {
+    const { input } = nw.global.settings;
+
     if(this.registry[environment])
     {
       const registry = this.registry[environment][name];
       if(registry)
       {
+        if(environment !== 'gui')
+        {
+          input.I_REGISTRY[environment][name] = undefined;
+          input.save();
+        }
+        
         if(registry.key) this.unbind(registry, registry.key);
         this.registry[environment][name] = undefined;
         if(['*', this.environment].indexOf(environment) !== -1) this.active[name] = undefined;
@@ -128,6 +169,25 @@ class Input {
   }
   
   bind(registry, key, options) {
+    /* import saved keys for a bind */
+    const { input } = nw.global.settings;
+    const sRegistry = (input.I_REGISTRY[registry.environment] && input.I_REGISTRY[registry.environment][registry.name]);
+    const sKey = (sRegistry && sRegistry.key);
+    
+    if(options.update)
+    {
+      sRegistry.key = key;
+      sRegistry.name = options.name;
+      sRegistry.key = options.key;
+      sRegistry.index = options.index;
+      sRegistry.toggle = options.toggle;
+      sRegistry.shiftKey = options.shiftKey;
+      sRegistry.ctrlKey = options.ctrlKey;
+      sRegistry.altKey = options.altKey;
+      input.save();
+    }
+    
+    key = ((sKey !== undefined && !options.update) ? sKey : key);
     const keyCode = (typeof key === 'number' ? key : this.keys.indexOf(key.toLowerCase()));
     
     if(registry.key !== -1) this.unbind(registry, keyCode);
@@ -143,10 +203,18 @@ class Input {
   }
   
   unbind(registry, key) {
+    const { input } = nw.global.settings;
+    const sRegistry = (input.I_REGISTRY[registry.environment] && input.I_REGISTRY[registry.environment][registry.name]);
     const keyCode = (typeof key === 'number' ? key : this.keys.indexOf(key.toLowerCase()));
     this.inputs[keyCode].splice(registry.index, 1);
     registry.key = -1;
     registry.index = -1;
+    
+    if(sRegistry)
+    {
+      sRegistry.key = -1;
+      sRegistry.index = -1;
+    }
   }
   
   event(e) {
@@ -196,7 +264,9 @@ class Input {
   }
   
   created() {
-    nw.global.keys = this.$input.pressed;
+    const { input } = nw.global.settings;
+    
+    input.I_CURRENT = this.$input.pressed;
     nw.global.registerInput = this.$input.register;
     nw.global.unregisterInput = this.$input.register;
     nw.global.InputRegistry = this.$input.active;

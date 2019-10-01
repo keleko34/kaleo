@@ -8,11 +8,10 @@ module.exports = {
     /* Allows listening to emitted events */
     engine.prototype.$listen = function listen(key, func) {
       if(!__eventbus[key]) __eventbus[key] = [];
+      
       __eventbus[key].push(func.bind(this));
-      if(__alerts[key])
-      {
-        func(__alerts[key]);
-      }
+      
+      if(__alerts[key]) func(__alerts[key]);
       return this;
     };
     

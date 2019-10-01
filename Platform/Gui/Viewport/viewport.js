@@ -20,8 +20,17 @@ class Viewport {
   main() {
     if(this.isRunning)
     {
+      /* UI UPDATES */
+      nw.global.guiUpdate();
+      nw.global.guiDelay();
+      
+      /* ENGINE RENER CHAIN */
       this.engine.renderer.render();
+      
+      /* DRAW BACKEND CANVAS TO FRONTEND */
       if(this.viewport) this.ctx.drawImage(this.engine.renderer.canvas, 0, 0, this.viewport.clientWidth, this.viewport.clientHeight);
+      
+      /* NEXT FRAME */
       this.timer = requestAnimationFrame(this.main);
     }
   }

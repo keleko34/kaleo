@@ -14,7 +14,7 @@ module.exports = {
         '_plugins': path.join(__dirname, 'Platform/Gui/_plugins'),
         '_assets': path.join(__dirname, 'Platform/Gui/_assets'),
         'engine': path.join(__dirname, 'Platform/Engine'),
-
+        'settings': path.join(__dirname, 'Platform/Settings'),
         /* Fancy */
         '~': path.join(__dirname, 'node_modules'),
         '@': path.join(__dirname, 'Platform/Gui/')

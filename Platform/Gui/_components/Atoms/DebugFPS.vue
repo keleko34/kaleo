@@ -9,16 +9,18 @@
 export default {
   name: 'DebugFps',
   data() {
+    const { F_FPS } = nw.global.settings.engine;
     return {
-      avg: 0,
-      current: 0
+      avg: (F_FPS.avg || 0),
+      current: (F_FPS.current || 0)
     }
   },
   mounted() {
-    this.$listen('fps', (e) => {
-      this.avg = e.avg;
-      this.current = e.current;
-    })
+    const { F_FPS } = nw.global.settings.engine;
+    this.$delay(() => {
+      this.avg = F_FPS.avg;
+      this.current = F_FPS.current;
+    }, 5);
   }
 }
 </script>

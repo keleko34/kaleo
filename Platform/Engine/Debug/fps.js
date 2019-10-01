@@ -1,10 +1,9 @@
+const { F_FPS } = global.settings.engine;
+
 class FPS {
   constructor() {
-    this.min = 100;
-    this.max = 0;
     this.avg = 0;
     this.last = 0;
-    this.current = 0;
     this.history = [];
     this.maxhistory = 50;
   }
@@ -19,9 +18,9 @@ class FPS {
     {
       if(last !== now)
       {
-        this.current = Math.round(1000 / (now - last));
+        F_FPS.current = Math.round(1000 / (now - last));
         
-        history.push(this.current);
+        history.push(F_FPS.current);
         if(history.length >= this.maxhistory) history.shift();
         
         const len = history.length;
@@ -31,14 +30,13 @@ class FPS {
         {
           this.avg += history[x];
         }
-        this.avg = Math.round(this.avg / history.length);
+        F_FPS.avg = this.avg = Math.round(this.avg / history.length);
         
-        if(this.current < this.min) this.min = this.current;
-        if(this.current > this.max) this.max = this.current;
+        if(F_FPS.current < F_FPS.min) F_FPS.min = F_FPS.current;
+        if(F_FPS.current > F_FPS.max) F_FPS.max = F_FPS.current;
       }
     }
     this.last = now;
-    this.$broadcast('fps', this);
   }
   
   install(engine) {

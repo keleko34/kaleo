@@ -1,17 +1,16 @@
-const Engine = require('./Engine'),
+const DataLayer = require('./DataLayer/init'),
+      Engine = require('./Engine'),
       Renderer = require('./Renderer/Renderer');
 
 /* GLOBALS */
 const eventbus = require('./_plugins/eventbus'),
       /* TODO: Need to remove on build */
-      fps = require('./Debug/fps'),
-      keys = require('./Debug/keys'),
-      antialias = require('./Core/antialias');
+      fps = require('./Debug/fps');
+
+const Vec2 = require('./Core/Math/Vec2');
 
 Engine.use(eventbus);
 Engine.use(fps);
-Engine.use(keys);
-Engine.use(antialias);
 
 global.main = new Engine({
   /* TODO: Need to remove on build */

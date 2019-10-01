@@ -29,6 +29,16 @@ class Window {
     })
   }
   
+  toggleLock(toggle) {
+    this.locked = (toggle !== undefined ? toggle : !this.locked);
+  }
+  
+  restore() {
+    this.maximized = false;
+    this.minimized = false;
+    this.window.restore();
+  }
+  
   toggleMaximize(toggle) {
     if(this.locked) return;
     if(toggle !== undefined) this.maximized = !toggle;
@@ -64,6 +74,8 @@ class Window {
   }
   
   created() {
+    this.$listen('lock', (toggle) => (this.$window.toggleLock(toggle)));
+    this.$listen('restore', () => (this.$window.restore()));
     this.$listen('maximize', (toggle) => (this.$window.toggleMaximize(toggle)));
     this.$listen('minimize', (toggle) => (this.$window.toggleMinimize(toggle)));
     this.$listen('close', () => (this.$window.window.close(true)));

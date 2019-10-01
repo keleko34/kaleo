@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "core-js": "2.6.5",
-    "nw": "0.38.3-sdk",
+    "nw": "0.40.2-sdk",
     "vue": "2.6.10"
   },
   "devDependencies": {
@@ -88,7 +88,8 @@
       "space-infix-ops": "off",
       "no-extra-parens": "off",
       "padded-blocks": "off",
-      "valid-typeof": "off"
+      "valid-typeof": "off",
+      "no-fallthrough": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

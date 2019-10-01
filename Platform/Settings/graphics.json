@@ -1,0 +1,13 @@
+{
+  "R_WIDTH": 1920,
+  "R_HEIGHT": 1080,
+  "A_ALIAS": true,
+  "W_MODE": 0,
+  "W_FULLSCREEN": 1,
+  "W_WINDOWFULLSCREEN": 2,
+  "B_MODE": 0,
+  "B_ALPHA": 0,
+  "B_ADDITIVE": 1,
+  "B_ALPHA_ADDITIVE": 2,
+  "B_OVERRIDE": 3
+}

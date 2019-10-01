@@ -40,6 +40,7 @@ export default {
     flex-direction: row;
     position: relative;
     line-height: 26px;
+    z-index: 1;
     &__project-title {
       position: absolute;
       width: 100%;

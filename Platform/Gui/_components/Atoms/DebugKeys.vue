@@ -13,8 +13,10 @@ export default {
     }
   },
   mounted() {
-    this.$listen('keys', (keys) => {
-      this.keys = keys.join(' + ');
+    const { input } = nw.global.settings;
+    
+    this.$update(() => {
+      this.keys = input.I_CURRENT.join(' + ');
     })
   },
   filters: {

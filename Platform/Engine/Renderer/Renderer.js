@@ -1,36 +1,26 @@
-/* BLEND MODES */
-const BLEND_ALPHA = 0,
-      BLEND_ADDITIVE = 1,
-      BLEND_ALPHA_ADDITIVE = 2,
-      BLEND_OVERRIDE = 3;
+const { graphics } = global.settings;
+const Camera = require('./../Core/Camera');
 
 class Renderer {
   constructor() {
     this.canvas = document.createElement('canvas');
     this.pipeline = [];
-    this.antialias = true;
-    this.size = 3;
-    this.resolutions = [
-      { w: 800, h: 600 },
-      { w: 1280, h: 720 },
-      { w: 1600, h: 900 },
-      { w: 1920, h: 1080 },
-      { w: 2560, h: 1440 },
-      { w: 3840, h: 2160 }
-    ]
-    
     this.setup();
   }
   
   setup() {
-    this.ctx = this.canvas.getContext('webgl2', { antialias: this.antialias });
+    this.ctx = this.canvas.getContext('webgl2', { antialias: graphics.A_ALIAS });
     
     /* GL SETUP */
-    this.setResolution(this.size);
+    this.setResolution(graphics.R_INDEX);
     this.ctx.cullFace(this.ctx.BACK);
     this.ctx.enable(this.ctx.CULL_FACE);
     this.ctx.depthFunc(this.ctx.LEQUAL);
-    this.ctx.blendFunc(this.ctx.SRC_ALPHA, this.ctx.ONE_MINUS_SRC_ALPHA);
+    this.setBlendMode(graphics.B_MODE);
+    
+    this.camera = new Camera();
+    
+    this.camera.setPerspective();
   }
   
   render() {
@@ -73,9 +63,9 @@ class Renderer {
   }
   
   setResolution(size) {
-    if(this.resolutions[size])
+    if(graphics.R_LIST[size])
     {
-      const res = this.resolutions[size];
+      const res = graphics.R_LIST[size];
       this.canvas.width = res.w;
       this.canvas.height = res.h;
       this.ctx.viewport(0, 0, res.w, res.h);
@@ -85,16 +75,16 @@ class Renderer {
   setBlendMode(blendMode) {
     switch(blendMode)
     {
-      case BLEND_ALPHA:
+      case graphics.B_ALPHA:
         this.ctx.blendFunc(this.ctx.SRC_ALPHA, this.ctx.ONE_MINUS_SRC_ALPHA);
         break;
-      case BLEND_ADDITIVE:
+      case graphics.B_ADDITIVE:
         this.ctx.blendFunc(this.ctx.ONE, this.ctx.ONE);
         break;
-      case BLEND_ALPHA_ADDITIVE:
+      case graphics.B_ALPHA_ADDITIVE:
         this.ctx.blendFunc(this.ctx.SRC_ALPHA, this.ctx.ONE);
         break;
-      case BLEND_OVERRIDE:
+      case graphics.B_OVERRIDE:
         this.ctx.blendFunc(this.ctx.ONE, this.ctx.ZERO);
         break;
     }

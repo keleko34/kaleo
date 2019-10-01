@@ -3,6 +3,7 @@ import App from './App.vue'
 
 /* GLOBALS */
 import eventbus from '_plugins/eventbus';
+import rendergui from '_plugins/rendergui';
 import window from '@/Window/window';
 import input from '@/Input/input';
 import viewport from '@/Viewport/viewport';
@@ -12,6 +13,7 @@ Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
 Vue.use(eventbus);
+Vue.use(rendergui);
 Vue.use(window);
 Vue.use(viewport);
 Vue.use(input);
