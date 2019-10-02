@@ -79,14 +79,26 @@ class Input {
     }
   }
   
+  /**
+  * Registers an action to the registry and environment
+  *
+  * @param {String} name the name of the action ex. jump
+  * @param {String} environment the name of the environment this action can occur ex. vehicle, plane etc
+  * @param {Object} options a series of optional requirements
+  * @param options {Boolean} toggle action can be toggled by a key or only active while a key is pressed
+  * @returns {Input}
+  */
   register(name, environment, options)
   {
     const { input } = nw.global.settings;
     
     if(this.environments.indexOf(environment) !== -1)
     {
-      options.environment = environment;
+      /* Add the name and environment to options, options will be saved to the registry */
       options.name = name;
+      options.environment = environment;
+      
+      /* GUI has highest priority, it can also add keys directly using options */
       if(environment === 'gui' && (options && options.key))
       {
         if(this.registry[environment][name]) this.unregister(name, environment);
@@ -103,9 +115,12 @@ class Input {
         
         const saved = input.I_REGISTRY[environment][name];
         
+        /* active is used by the engine loop, when active is true it gets added to an action render list, 
+           the engine on next frame will loop through this run the action and remove the active status */
         options = (options || {});
         options.active = false;
         
+        /* if the registry already exists, we simply update the options */
         if(saved)
         {
           options.key = saved.key;
@@ -120,6 +135,7 @@ class Input {
           options.key = -1;
           options.index = -1;
           
+          /* update the registry with the action */
           input.I_REGISTRY[environment][name] = {
             name: options.name,
             key: options.key,
@@ -129,6 +145,7 @@ class Input {
             ctrlKey: options.ctrlKey,
             altKey: options.altKey
           }
+          /* saves the action to json file */
           input.save();
         }
 
@@ -145,6 +162,7 @@ class Input {
         this.active[name].environment = environment;
       }
     }
+    return this;
   }
   
   unregister(name, environment) {
@@ -168,12 +186,23 @@ class Input {
     }
   }
   
+  /**
+  * Binds a key to a registry
+  *
+  * @param {Registry Object} registry the registry to bind to
+  * @param {Number|String} key the key that can be pressed to activate this registry
+  * @param {Object} options a series of optional requirements
+  * @param options {Boolean} update tells the registry to update itself using the passed options
+  * @param options {Boolean} toggle action can be toggled by a key or only active while a key is pressed
+  * @returns {Input}
+  */
   bind(registry, key, options) {
     /* import saved keys for a bind */
     const { input } = nw.global.settings;
     const sRegistry = (input.I_REGISTRY[registry.environment] && input.I_REGISTRY[registry.environment][registry.name]);
     const sKey = (sRegistry && sRegistry.key);
     
+    /* TODO: shiftKey, altKey, ctrlKey should happen here and not in registry */
     if(options.update)
     {
       sRegistry.key = key;
@@ -200,6 +229,7 @@ class Input {
       action: (registry.action || update.bind(this)),
       ...options
     })
+    return this;
   }
   
   unbind(registry, key) {

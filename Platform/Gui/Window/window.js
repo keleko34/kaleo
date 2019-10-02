@@ -33,6 +33,7 @@ class Window {
     this.locked = (toggle !== undefined ? toggle : !this.locked);
   }
   
+  /* TODO: window restores on toolbar dblclick, if we are in window fullscreen this functionality should be disabled */
   restore() {
     this.maximized = false;
     this.minimized = false;

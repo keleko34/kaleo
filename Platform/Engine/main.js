@@ -1,19 +1,17 @@
 const DataLayer = require('./DataLayer/init'),
       Engine = require('./Engine'),
-      Renderer = require('./Renderer/Renderer');
+      Renderer = require('./Core/Renderer');
 
 /* GLOBALS */
 const eventbus = require('./_plugins/eventbus'),
-      /* TODO: Need to remove on build */
       fps = require('./Debug/fps');
-
-const Vec2 = require('./Core/Math/Vec2');
 
 Engine.use(eventbus);
 Engine.use(fps);
 
+global.gl = null;
 global.main = new Engine({
-  /* TODO: Need to remove on build */
+  /* TODO: Need to remove debug on prod build */
   debug: true,
   renderer: new Renderer(),
   data: {},

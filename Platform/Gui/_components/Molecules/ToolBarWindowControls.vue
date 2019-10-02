@@ -61,7 +61,7 @@ export default {
   .ToolBarWindowControls {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    height: 26px;
     justify-content: flex-end;
     &__action {
       color: #bdc2c7;

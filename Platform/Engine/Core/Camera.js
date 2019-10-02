@@ -7,10 +7,35 @@ const Vec2 = require('./Math/Vec2');
 class Camera {
   constructor()
   {
+    /* Matrices */
     this.vMatrix = new Mat4();
     this.pMatrix = new Mat4();
     this.pMatrixInv = new Mat4();
     this.pvMatrix = new Mat4();
+    
+    /* MOVEMENT */
+    this.isLocked = 0;
+    this.mode = 2;
+    this.position = new Vec3();
+    
+    /* Target */
+    this.target = new Vec3();
+    this.targetPos = new Vec3(0, 0, 0);
+    this.targetDistance = 5;
+    this.targetDistanceMin = 0.1;
+    
+    /* RATES */
+    this.ORBIT_RATE = 0.003;
+    this.ORBIT_ZOOM = 0.4;
+    this.PAN_RATE = 0.008;
+    this.PANY_RATE = 0.08;
+    this.LOOK_RATE = 0.002;
+    this.FORWARD_RATE = -0.03;
+    this.ROTATE_RATE = 0.02;
+    
+    /* Last Mouse Changes */
+    this.lastY = 0;
+    this.lastX = 0;
   }
   
   setOrthographic(left, right, bottom, top, near, far) {
@@ -70,5 +95,9 @@ class Camera {
     return new Vec2((p[0] + 1) * 0.5 * R_WIDTH, (-p[1] + 1) * 0.5 * R_HEIGHT);
   }
 }
+
+Camera.MODE_ORBIT = 0;
+Camera.MODE_PAN = 1;
+Camera.MODE_LOOK = 2;
 
 module.exports = Camera;

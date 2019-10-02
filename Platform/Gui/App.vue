@@ -26,6 +26,7 @@ export default {
     }
     .Viewport {
       width: 100%;
+      max-height: calc(100% - 26px);
       flex: 1 1 100%;
     }
   }

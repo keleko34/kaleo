@@ -1,26 +1,32 @@
 const { graphics } = global.settings;
-const Camera = require('./../Core/Camera');
+const test = require('./../Test/Test');
+const Camera = require('./Camera');
 
 class Renderer {
   constructor() {
-    this.canvas = document.createElement('canvas');
+    this.canvas = null;
+    this.ctx = null;
     this.pipeline = [];
-    this.setup();
   }
   
-  setup() {
-    this.ctx = this.canvas.getContext('webgl2', { antialias: graphics.A_ALIAS });
+  setup(canvas) {
+    if(canvas) this.canvas = canvas;
+    this.ctx = global.gl = this.canvas.getContext('webgl2', { antialias: graphics.A_ALIAS });
     
     /* GL SETUP */
     this.setResolution(graphics.R_INDEX);
-    this.ctx.cullFace(this.ctx.BACK);
-    this.ctx.enable(this.ctx.CULL_FACE);
-    this.ctx.depthFunc(this.ctx.LEQUAL);
+    // gl.cullFace(gl.BACK);
+    // gl.enable(gl.CULL_FACE);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
     this.setBlendMode(graphics.B_MODE);
     
-    this.camera = new Camera();
+    // this.camera = new Camera();
     
-    this.camera.setPerspective();
+    // this.camera.setPerspective();
+    
+    /* Test Code */
+    test.init();
   }
   
   render() {
@@ -30,7 +36,8 @@ class Renderer {
           len = pipeline.length;
     
     let x = 0;
-    for(x;x<len;x++) { pipeline[x](ctx) }
+    for(x;x<len;x++) { pipeline[x](ctx); }
+    test();
   }
   
   pipe(func) {
@@ -59,7 +66,8 @@ class Renderer {
   }
   
   clear() {
-    this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
   
   setResolution(size) {
@@ -68,7 +76,7 @@ class Renderer {
       const res = graphics.R_LIST[size];
       this.canvas.width = res.w;
       this.canvas.height = res.h;
-      this.ctx.viewport(0, 0, res.w, res.h);
+      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
   }
   

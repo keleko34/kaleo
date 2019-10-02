@@ -70,6 +70,7 @@ export default {
           this.res = `${v.w}x${v.h}`;
           graphics.R_WIDTH = v.w;
           graphics.R_HEIGHT = v.h;
+          this.$alert('resolution', [v.w, v.h]);
           graphics.save();
           graphics.update();
         }

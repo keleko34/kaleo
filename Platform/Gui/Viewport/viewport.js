@@ -2,19 +2,10 @@ class Viewport {
   constructor() {
     this._viewport = undefined;
     this.ctx = undefined;
-    this.isRunning = true;
+    this.isRunning = false;
     this.timer = null;
     this.engine = window.require('Platform/Engine/main.js');
     this.main = this.main.bind(this);
-  }
-  
-  get viewport() {
-    return this._viewport;
-  }
-  
-  set viewport(v) {
-    this._viewport = v;
-    this.ctx = v.getContext('2d');
   }
   
   main() {
@@ -24,11 +15,8 @@ class Viewport {
       nw.global.guiUpdate();
       nw.global.guiDelay();
       
-      /* ENGINE RENER CHAIN */
+      /* ENGINE RENDER CHAIN */
       this.engine.renderer.render();
-      
-      /* DRAW BACKEND CANVAS TO FRONTEND */
-      if(this.viewport) this.ctx.drawImage(this.engine.renderer.canvas, 0, 0, this.viewport.clientWidth, this.viewport.clientHeight);
       
       /* NEXT FRAME */
       this.timer = requestAnimationFrame(this.main);
@@ -43,6 +31,11 @@ class Viewport {
   
   stop() {
     this.isRunning = false;
+  }
+  
+  setup(canvas) {
+    this.engine.renderer.setup(canvas);
+    this.start();
   }
   
   install(vue) {

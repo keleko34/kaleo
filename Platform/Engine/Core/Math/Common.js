@@ -6,7 +6,8 @@
 const EPSILON = 0.000001,
       DEGREE = Math.PI / 180,
       NEARZERO = 1e-6,
-      DEGTORAD = 0.01745329251;
+      DEGTORAD = 0.01745329251,
+      PIHALF = 1.5707963267948966;
 
 /**
  * Convert Degree To Radian
@@ -30,4 +31,4 @@ function equals(a, b) {
   return Math.abs(a - b) <= (EPSILON * Math.max(1, Math.abs(a), Math.abs(b)));
 }
 
-module.exports = { EPSILON, NEARZERO, DEGTORAD, equals, toRadian }
+module.exports = { EPSILON, NEARZERO, DEGTORAD, DEGREE, PIHALF, equals, toRadian }

@@ -65,6 +65,16 @@ class Vec4 extends Float32Array {
   }
   
   /**
+  * Calculates a normalized Vec4 from a rgba array
+  *
+  * @param {RGBA ARRAY} a the source array
+  * @returns {Vec4}
+  */
+  rgbaToVec(rgba) {
+    return new Vec4(rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]);
+  }
+  
+  /**
   * Returns a string representation of a vector
   *
   * @returns {String} string representation of the vector
@@ -100,6 +110,10 @@ class Vec4 extends Float32Array {
     out[2] = a[2] * x + a[6] * y + a[10] * z + a[14];
     out[3] = a[3] * x + a[7] * y + a[11] * z + a[15];
     return out;
+  }
+  
+  static rgbaToVec(rgba) {
+    return new Vec4(rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]);
   }
 }
 

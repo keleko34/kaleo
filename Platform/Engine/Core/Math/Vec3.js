@@ -818,6 +818,15 @@ class Vec3 extends Float32Array {
   }
   
   /**
+  * Translates a rgb array to a normalized Vec3
+  * @param {RGB ARRAY} a The color array to alter
+  * @returns {Vec3} the normalized Vec3
+  */
+  rgbToVec(rgb) {
+    return new Vec3(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+  }
+  
+  /**
   * Returns a string representation of a vector
   *
   * @returns {String} string representation of the vector
@@ -1357,6 +1366,9 @@ class Vec3 extends Float32Array {
     return Math.atan2(Vec3.cross(out, a), Vec3.dot(out, a));
   }
   
+  static rgbToVec(rgb) {
+    return new Vec3(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+  }
 }
 
 Vec3.UP = new Vec3(0, 1, 0);

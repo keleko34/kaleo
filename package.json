@@ -61,7 +61,8 @@
     },
     "globals": {
       "nw": true,
-      "chrome": true
+      "chrome": true,
+      "gl": true
     },
     "extends": [
       "plugin:vue/base",
