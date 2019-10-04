@@ -7,7 +7,7 @@
     "debug": "node ./Scripts/debug",
     "kill": "node ./Scripts/kill",
     "nw-build": "node ./Scripts/build",
-    "nw-debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-benchmarking --enable-gpu-client-logging --enable-gpu-debugging --load-extension=Scripts/Extensions/ShaderEditorExtension/src,node_modules/nw-vue-devtools/extension",
+    "nw-debug": "node_modules\\nw\\nwjs\\nw . --disable-raf-throttling --enable-logging --remote-debugging-port=1729 --enable-gpu-benchmarking --enable-gpu-client-logging --enable-gpu-debugging --load-extension=node_modules/nw-vue-devtools/extension",
     "nw-serve": "node_modules\\nw\\nwjs\\nw ./Build --disable-raf-throttling",
     "postinstall": "npm run setup",
     "setup": "node ./Scripts/setup",
@@ -27,8 +27,8 @@
     "height": 720
   },
   "dependencies": {
-    "core-js": "2.6.5",
-    "nw": "0.40.2-sdk",
+    "core-js": "2.6.0",
+    "nw": "0.41.2-sdk",
     "vue": "2.6.10"
   },
   "devDependencies": {
@@ -37,15 +37,16 @@
     "@vue/cli-service": "3.7.0",
     "@vue/eslint-config-standard": "4.0.0",
     "babel-eslint": "10.0.1",
-    "concurrently": "4.1.0",
+    "concurrently": "4.1.2",
     "copy-webpack-plugin": "5.0.3",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.0.0",
     "nw-builder": "3.5.7",
-    "nw-vue-devtools": "1.3.0",
+    "nw-vue-devtools": "^1.3.0",
     "ps-node": "0.1.6",
     "sass": "1.18.0",
     "sass-loader": "7.1.0",
+    "spectorjs": "git+https://github.com/BabylonJS/Spector.js.git",
     "vue-template-compiler": "2.6.10"
   },
   "babel": {

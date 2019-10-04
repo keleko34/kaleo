@@ -2,7 +2,7 @@
   "R_WIDTH": 1920,
   "R_HEIGHT": 1080,
   "A_ALIAS": true,
-  "W_MODE": 2,
+  "W_MODE": 0,
   "W_FULLSCREEN": 1,
   "W_WINDOWFULLSCREEN": 2,
   "B_MODE": 0,

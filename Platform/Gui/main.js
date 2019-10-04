@@ -3,17 +3,15 @@ import App from './App.vue'
 
 /* GLOBALS */
 import eventbus from '_plugins/eventbus';
-import rendergui from '_plugins/rendergui';
-import window from '@/Window/window';
-import input from '@/Input/input';
-import viewport from '@/Viewport/viewport';
+import window from '@/Core/Window';
+import viewport from '@/Core/Viewport';
+import input from '@/Core/Input/Input';
 
 Vue.config.productionTip = false;
 /* TODO: TOGGLE FOR BUILD */
 Vue.config.devtools = true;
 
 Vue.use(eventbus);
-Vue.use(rendergui);
 Vue.use(window);
 Vue.use(viewport);
 Vue.use(input);

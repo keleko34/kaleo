@@ -1,3 +1,4 @@
+/* DataLayer is the store that handles saving data to json files and holding the current data */
 const DataLayer = require('./DataLayer/init'),
       Engine = require('./Engine'),
       Renderer = require('./Core/Renderer');

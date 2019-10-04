@@ -1,6 +1,5 @@
 const __alerts = {},
-      __eventbus = {},
-      __pre = [];
+      __eventbus = {};
 
 module.exports = {
   install(engine) {
@@ -52,29 +51,8 @@ module.exports = {
       return this;
     };
     
-    engine.prototype.$broadcast = function broadcast(key, value) {
-      this.$alert(key, value);
-      if(global.$alert)
-      {
-        global.$alert(key, value);
-      }
-      else
-      {
-        __pre.push([key, value]);
-      }
-    }
-    
     engine.prototype.$fetch = function fetch(key) {
-      return __alerts[key]
-    }
-  },
-  update() {
-    if(__pre.length && global.$alert)
-    {
-      __pre.forEach((alert) => {
-        global.$alert(alert[0], alert[1]);
-      })
-      __pre.splice(0, __pre.length);
+      return __alerts[key];
     }
   }
 }

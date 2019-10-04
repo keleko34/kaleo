@@ -42,10 +42,6 @@ class FPS {
   install(engine) {
     engine.prototype.$fps = this;
   }
-  
-  extend() {
-    this.$fps.$broadcast = this.$broadcast.bind(this);
-  }
 }
 
 module.exports = new FPS();

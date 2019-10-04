@@ -7,12 +7,11 @@ module.exports = {
     resolve: {
       alias: {
         /* Standard */
-        'atoms': path.join(__dirname, 'Platform/Gui/_components/Atoms'),
-        'molecules': path.join(__dirname, 'Platform/Gui/_components/Molecules'),
-        'organisms': path.join(__dirname, 'Platform/Gui/_components/Organisms'),
-        '_helpers': path.join(__dirname, 'Platform/Gui/_helpers'),
+        'atoms': path.join(__dirname, 'Platform/Gui/App/Components/Atoms'),
+        'molecules': path.join(__dirname, 'Platform/Gui/App/Components/Molecules'),
+        'organisms': path.join(__dirname, 'Platform/Gui/App/Components/Organisms'),
         '_plugins': path.join(__dirname, 'Platform/Gui/_plugins'),
-        '_assets': path.join(__dirname, 'Platform/Gui/_assets'),
+        'assets': path.join(__dirname, 'Platform/Gui/App/Assets'),
         'engine': path.join(__dirname, 'Platform/Engine'),
         'settings': path.join(__dirname, 'Platform/Settings'),
         /* Fancy */
@@ -21,7 +20,7 @@ module.exports = {
       }
     },
     plugins: (process.env.NODE_ENV === 'production' ? [new Copy([
-      { from: 'Platform/Gui/_assets', to: '_assets' },
+      { from: 'Platform/Gui/App/Assets', to: 'App/Assets' },
       { from: 'Platform/Engine', to: 'Platform/Engine' }
     ])] : [])
   },

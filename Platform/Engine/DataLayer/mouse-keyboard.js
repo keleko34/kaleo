@@ -4,6 +4,7 @@ const local = process.cwd().replace(/\\/g, '/');
 
 const MOUSEKEYBOARD = Object.assign({
   I_CURRENT: [],
+  I_ENVIRONMENT: 'default',
   save
 }, settings);
 
