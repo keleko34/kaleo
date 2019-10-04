@@ -13,8 +13,10 @@ export default {
     }
   },
   mounted() {
+    /* fetch the input store object */
     const { input } = nw.global.settings;
     
+    /* render the current pressed keys on every frame */
     this.$pipe(() => {
       this.keys = input.I_CURRENT.join(' + ');
     })

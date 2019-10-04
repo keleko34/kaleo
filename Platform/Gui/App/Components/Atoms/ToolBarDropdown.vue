@@ -20,21 +20,6 @@
 </template>
 
 <script>
-function mapOptions(options)
-{
-  return options.map((opt) => {
-    const { action, text, key } = opt;
-    return {
-      key,
-      text,
-      action: () => {
-        action.apply(this, arguments);
-        this.toggleOpen();
-      }
-    };
-  })
-}
-  
 export default {
   name: 'ToolBarDropdown',
   props: {
@@ -42,36 +27,52 @@ export default {
     canHover: { type: Boolean, default: false }
   },
   data() {
+    /* Map passed options to apply local scope */
+    const dOptions = this.options.map((opt) => {
+      opt.action = opt.action.bind(this);
+      return opt;
+    });
+    
     return {
       dFocus: false,
-      dOptions: mapOptions.call(this, this.options)
+      dOptions
     }
   },
   mounted() {
-    this.options.forEach((opt) => {
-      if(opt.key)
+    
+    /* loop through each option, if it contains a key add it to the input registry */
+    const len = this.dOptions.length;
+    let x = 0, opt, lKey;
+    
+    for(x;x<len;x++)
+    {
+      opt = this.dOptions[x];
+      if(opt.key !== undefined)
       {
-        this.$alert('register_input', {
-          name: opt.text,
-          environment: 'gui',
-          key: opt.key.toLowerCase().replace(/(ctrl)|(alt)|(shift)|[\s+]/g, ''),
+        /* each item should be toggle type key, meaning the action happens once on keypress,
+           environment is gui which takes special precedence over all other environments */
+        lKey = opt.key.toLowerCase();
+        this.$register(opt.text, 'gui', {
+          key: lKey.replace(/(ctrl)|(alt)|(shift)|[\s+]/g, ''),
           toggle: true,
           action: opt.action,
-          shiftKey: (opt.key.toLowerCase().indexOf('shift') !== -1),
-          ctrlKey: (opt.key.toLowerCase().indexOf('ctrl') !== -1),
-          altKey: (opt.key.toLowerCase().indexOf('alt') !== -1)
+          shiftKey: lKey.indexOf('shift') !== -1,
+          ctrlKey: lKey.indexOf('ctrl') !== -1,
+          altKey: lKey.indexOf('alt') !== -1
         })
       }
-    })
+    }
   },
   methods: {
     toggleOpen(toggle) {
-      if(this.dFocus && !(typeof toggle === 'boolean' ? toggle : !this.dFocus))
-      {
-        this.$alert('toolbar_active', false);
-      }
+      /* turns off the ability to hover open dropdowns if we reclicked an active item */
+      if(this.dFocus && !(typeof toggle === 'boolean' ? toggle : !this.dFocus)) this.$alert('toolbar_active', false);
+      
+      /* set focus, if not focused remove document blur event */
       this.dFocus = (typeof toggle === 'boolean' ? toggle : !this.dFocus);
       if(!this.dFocus) document.removeEventListener('click', this.handleBlur);
+      
+      /* if focused add document blur listener, alert to parent to close all */
       if(this.dFocus)
       {
         document.addEventListener('click', this.handleBlur);
@@ -79,6 +80,7 @@ export default {
       }
     },
     handleHover() {
+      /* If the dropdown can open simply from hover, click to handle blur of other dropdowns and then open */
       if(this.canHover)
       {
         document.dispatchEvent(new MouseEvent('click'));
@@ -86,6 +88,7 @@ export default {
       }
     },
     handleBlur(e) {
+      /* if the current item clicked is not in the dropdown we close the dropdown */
       if(!this.$refs.container.contains(e.target)) this.toggleOpen(false);
     }
   },

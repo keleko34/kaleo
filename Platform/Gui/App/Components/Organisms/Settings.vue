@@ -26,6 +26,7 @@ export default {
   name: 'Settings',
   components: { SettingsGraphics, SettingsEngine },
   data() {
+    /* says which section is currently active */
     return {
       nav: ''
     }

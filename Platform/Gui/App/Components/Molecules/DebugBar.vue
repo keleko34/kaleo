@@ -13,9 +13,12 @@ export default {
   name: 'DebugBar',
   components: { DebugKeys, DebugFps },
   mounted() {
-    this.$listen('toggledebug', toggle => (this.toggleDebug(toggle)));
+    
+    /* listen for if debug is toggled */
+    this.$listen('toggledebug', this.toggleDebug);
   },
   data() {
+    /* get engine settings and initialize if debug should be shown */
     const { engine } = nw.global.settings;
     return {
       dDebug: (!!engine.D_DEBUG)
@@ -23,9 +26,13 @@ export default {
   },
   methods: {
     toggleDebug(toggle) {
+      
+      /* When debug is toggled save it to the engine settings */
       const { engine } = nw.global.settings;
       this.dDebug = (toggle !== undefined ? toggle : !this.dDebug);
       engine.D_DEBUG = (this.dDebug ? 1 : 0);
+      
+      /* save the engine settings to json */
       engine.save();
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="ToolBar" @click.stop="handleClick">
+  <div class="ToolBar">
     <tool-bar-logo>Kaleo</tool-bar-logo>
     <tool-bar-actions></tool-bar-actions>
     <div class="ToolBar__project-title">
@@ -18,13 +18,9 @@ export default {
   name: 'ToolBar',
   components: { ToolBarLogo, ToolBarActions, ToolBarWindowControls },
   data() {
+    /* TODO: get from project settings when that is implemented */
     return {
       applicationTitle: 'Untitled'
-    }
-  },
-  methods: {
-    handleClick() {
-      document.body.dispatchEvent(new MouseEvent('click'));
     }
   }
 }

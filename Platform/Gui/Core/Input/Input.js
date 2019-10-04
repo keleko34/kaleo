@@ -1,7 +1,34 @@
+/** 
+ * INPUT CLASS
+ *
+ * The input class is by far the most complete Core element,
+ * but also a heavy logical element, So some concepts need explained
+ *
+ * LOGIC:
+ * When a key is pressed the associated action must be ran on the render loop
+ * so it is cached to be ran when the next frame is called. we do not run them
+ * immediately. This is due to the javascript event loop being async and not
+ * synced with the render loop so executing actions straight away has adverse side
+ * effects for movement in the render loop expecially when a key is required to be held
+ * ex. walking, or running
+ *
+ * ENVIRONMENTS:
+ * Environments were added so that multiple registries containing the same keybinds
+ * but for different actions could exist. In one environment your character could have
+ * some actions such as walk or run, while in another your character is in a car and
+ * instead the actions will be drive or brake for the same keys.
+ *
+ * REGISTER VS BIND:
+ * Register and bind were seperated so that users could rebind actions for the keyboard and mouse
+ * settings. A action can be registered without an associated keybind thus allowing the action
+ * to be binded later but still existing in the input registry.
+ */
+
 import Keycodes from './Keycodes';
 import Keyboard from './Keyboard';
 import Mouse from './Mouse';
 
+/* Checks if the secondary important keys: ctrl, alt, shift match the bind being checked */
 function checkEvent(e, store)
 {
   if(store.ctrlKey !== e.ctrlKey) return false;
@@ -10,12 +37,36 @@ function checkEvent(e, store)
   return true;
 }
 
+/* This activates the registry to be ran on the next render frame */
 function update(e, registry, store)
 {
+  /* If its a toggled action we set it once, user must click the key again to deactivate,
+   * an example would be allowing the user to toggle a gun scope for zoom */
   if(registry.toggle)
   {
     registry.active = (!registry.active);
   }
+  
+  /* Action is ran a single time and user must release the key or button to run it again,
+   * an example would be jumping, or manual fire */
+  else if(registry.once)
+  {
+    if(['mouseup', 'keyup'].indexOf(e.type) !== -1)
+    {
+      registry.deactivated = true;
+    }
+    else
+    {
+      if(registry.deactivated)
+      {
+        registry.deactivated = false;
+        registry.active = true;
+      }
+    }
+  }
+  
+  /* This is a standard action, that requires the user to hold the button, deactivates on mouseup or keyup,
+   * an example would be running/walking, full auto*/
   else
   {
     if(['mouseup', 'keyup'].indexOf(e.type) !== -1)
@@ -31,21 +82,38 @@ function update(e, registry, store)
 
 class Input {
   constructor() {
+    
+    /* gets the keycodes {Number} associated with each key */
     this.keys = Keycodes.codes;
+    
+    /* `*` environments are binds that work in all environments, default is the base environment,
+     * gui is special as it does not follow the standard input rules and instead fires when the key
+     * has been activated by the user, they are outside the render loop and only control UI,
+     * such as activating the settings menu */
     this.environments = ['*', 'default', 'gui'];
     this.environment = 'default';
+    
     /* controls telling if the designated event is currently pressed */
     this.registry = {
       gui: {},
       '*': {},
       default: {}
     }
+
+    /* Holds the keys that are currently pressed */
     this.pressed = [];
+    
+    /* Holds methods for checking if an action is active or not */
     this.active = {};
+    
+    
     this.inputs = [];
+    
+    /* Maps events from the Mouse and Keyboard */
     this.mouse = new Mouse();
     this.keyboard = new Keyboard();
     
+    /* Extends the mouse and keyboard to be able to run the event */
     this.mouse.relay = this.event.bind(this);
     this.keyboard.relay = this.event.bind(this);
   }
@@ -253,20 +321,22 @@ class Input {
     if(storelen)
     {
       let x = 0,
-          registry;
+          registry,
+          reg;
       
       for(x;x<storelen;x++)
       {
-        registry = store[x].registry;
+        reg = store[x];
+        registry = reg.registry;
         if(['*', 'gui', this.environment].indexOf(registry.environment) !== -1)
         {
           if(registry.toggle)
           {
-            if(up && checkEvent(e, store[x])) store[x].action(e, registry, store[x]);
+            if(up && checkEvent(e, reg)) reg.action(e, registry, reg);
           }
           else
           {
-            store[x].action(e, registry, store[x]);
+            reg.action(e, registry, reg);
           }
         }
       }
@@ -284,6 +354,8 @@ class Input {
   
   install(vue) {
     vue.prototype.$input = this;
+    vue.prototype.$register = this.register.bind(this);
+    vue.prototype.$unregister = this.unregister.bind(this);
     vue.prototype.$bind = this.bind.bind(this);
     vue.prototype.$unbind = this.unbind.bind(this);
     vue.prototype.$mouse = this.mouse;
@@ -294,9 +366,6 @@ class Input {
     const { input } = nw.global.settings;
     
     input.I_CURRENT = this.$input.pressed;
-    nw.global.registerInput = this.$input.register;
-    nw.global.unregisterInput = this.$input.register;
-    nw.global.InputRegistry = this.$input.active;
     
     this.$keyboard.attach(document);
     

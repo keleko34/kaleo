@@ -16,12 +16,16 @@ export default {
   name: 'ToolBarActions',
   components: { ToolBarDropdown },
   mounted() {
+    /* Prevents the dropdown from just opening on hover without previously being clicked */
     document.addEventListener('click', (e) => {
       if(!this.$refs.toolbar.contains(e.target)) this.active = false;
     })
+    
+    /* listens for toggling dropdown hover can open state */
     this.$listen('toolbar_active', (toggle) => { this.active = toggle; })
   },
   data() {
+    /* dropdown options, console.log means no associated action. just there to look pretty till its implemented :) */
     return {
       active: false,
       file: [

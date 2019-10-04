@@ -17,7 +17,10 @@ export default {
     const { engine } = nw.global.settings;
     
     return {
+      /* Initial dropdown value from the engine settings */
       dDebug: (engine.D_DEBUG ? 'ON' : 'OFF'),
+      
+      /* Dropdown params */
       debug: [
         { text: 'ON',
           action: () => {

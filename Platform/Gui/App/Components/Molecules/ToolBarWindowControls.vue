@@ -25,6 +25,7 @@
 export default {
   name: 'ToolBarWindowControls',
   data() {
+    /* tells whether to show the maximized icone */
     return {
       maximized: this.$window.maximized
     }
