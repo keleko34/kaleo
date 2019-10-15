@@ -1,4 +1,4 @@
-/** 
+/**
  * INPUT CLASS
  *
  * The input class is by far the most complete Core element,
@@ -24,60 +24,18 @@
  * to be binded later but still existing in the input registry.
  */
 
+/* TODO: look into once vs toggle vs active, finish event changes, update gui listeners */
 import Keycodes from './Keycodes';
 import Keyboard from './Keyboard';
 import Mouse from './Mouse';
 
 /* Checks if the secondary important keys: ctrl, alt, shift match the bind being checked */
-function checkEvent(e, store)
+function checkEvent(e, registry)
 {
-  if(store.ctrlKey !== e.ctrlKey) return false;
-  if(store.shiftKey !== e.shiftKey) return false;
-  if(store.altKey !== e.altKey) return false;
+  if(registry.ctrlKey !== e.ctrlKey) return false;
+  if(registry.shiftKey !== e.shiftKey) return false;
+  if(registry.altKey !== e.altKey) return false;
   return true;
-}
-
-/* This activates the registry to be ran on the next render frame */
-function update(e, registry, store)
-{
-  /* If its a toggled action we set it once, user must click the key again to deactivate,
-   * an example would be allowing the user to toggle a gun scope for zoom */
-  if(registry.toggle)
-  {
-    registry.active = (!registry.active);
-  }
-  
-  /* Action is ran a single time and user must release the key or button to run it again,
-   * an example would be jumping, or manual fire */
-  else if(registry.once)
-  {
-    if(['mouseup', 'keyup'].indexOf(e.type) !== -1)
-    {
-      registry.deactivated = true;
-    }
-    else
-    {
-      if(registry.deactivated)
-      {
-        registry.deactivated = false;
-        registry.active = true;
-      }
-    }
-  }
-  
-  /* This is a standard action, that requires the user to hold the button, deactivates on mouseup or keyup,
-   * an example would be running/walking, full auto*/
-  else
-  {
-    if(['mouseup', 'keyup'].indexOf(e.type) !== -1)
-    {
-      registry.active = false;
-    }
-    else
-    {
-      registry.active = checkEvent(e, store);
-    }
-  }
 }
 
 class Input {
@@ -90,7 +48,7 @@ class Input {
      * gui is special as it does not follow the standard input rules and instead fires when the key
      * has been activated by the user, they are outside the render loop and only control UI,
      * such as activating the settings menu */
-    this.environments = ['*', 'default', 'gui'];
+    this.environments = ['*', 'default'];
     this.environment = 'default';
     
     /* controls telling if the designated event is currently pressed */
@@ -100,14 +58,14 @@ class Input {
       default: {}
     }
 
+    /* Holds each keys associated actions */
+    this.inputs = [];
+    
     /* Holds the keys that are currently pressed */
     this.pressed = [];
     
-    /* Holds methods for checking if an action is active or not */
-    this.active = {};
-    
-    
-    this.inputs = [];
+    /* Holds methods that will be ran on the next frame call */
+    this.active = [];
     
     /* Maps events from the Mouse and Keyboard */
     this.mouse = new Mouse();
@@ -118,6 +76,9 @@ class Input {
     this.keyboard.relay = this.event.bind(this);
   }
   
+  /* REGION ENVIRONMENTS */
+  
+  /* Sets the current active environment, determines which key mappings are active */
   setEnvironment(env) {
     const INPUT_SETTINGS = global.settings.input;
     if(['*', 'gui'].indexOf(env) === -1 && this.environments.indexOf(env) !== -1) 
@@ -126,110 +87,124 @@ class Input {
     }
   }
   
+  /* adds an environment that can be used */
   addEnvironment(env) {
     if(this.environments.indexOf(env) === -1)
     {
       this.environments.push(env);
-      this.store[env] = {};
+      this.registry[env] = {};
     }
   }
   
+  /* deletes an environment and all associated registries */
   deleteEnvironment(env) {
     if(['*', 'default', 'gui'].indexOf(env) === -1)
     {
       const INPUT_SETTINGS = global.settings.input;
       if(this.environment === env) INPUT_SETTINGS.I_ENVIRONMENT = this.environment = 'default';
       this.environments.splice(this.environments.indexOf(env), 1);
-      this.store[env] = null;
+      this.registry[env] = null;
     }
   }
+  
+  /* ENDREGION ENVIRONMENTS */
   
   /**
   * Registers an action to the registry and environment
   *
   * @param {String} name the name of the action ex. jump
   * @param {String} environment the name of the environment this action can occur ex. vehicle, plane etc
+  * @param {Function} action The method that will be run for the input
   * @param {Object} options a series of optional requirements
   * @param options {Boolean} toggle action can be toggled by a key or only active while a key is pressed
+  * @param options {Boolean} once action is run once and not repeated until user releases key and presses again
   * @returns {Input}
   */
-  register(name, environment, options)
+  register(name, environment, action, options)
   {
-    const { input } = nw.global.settings;
-    
+    const { input } = nw.global.settings,
+          opts = options || {};
     if(this.environments.indexOf(environment) !== -1)
     {
-      /* Add the name and environment to options, options will be saved to the registry */
-      options.name = name;
-      options.environment = environment;
+      const saved = input.I_REGISTRY[environment][name];
       
-      /* GUI has highest priority, it can also add keys directly using options */
-      if(environment === 'gui' && (options && options.key))
+      opts.name = name;
+      opts.environment = environment;
+      opts.action = action;
+      opts.immediate = false;
+      opts.key = saved ? saved.key : -1;
+      opts.index = saved ? saved.index : -1;
+      
+      /* If the registry was saved in the json we load the data */
+      if(saved)
       {
-        if(this.registry[environment][name]) this.unregister(name, environment);
-        const key = options.key;
-        options.active = false;
-        options.key = -1;
-        options.index = -1;
-        this.registry[environment][name] = options;
-        this.bind(this.registry[environment][name], key, options);
+        opts.mode = saved.mode;
+        opts.shiftKey = saved.shiftKey;
+        opts.ctrlKey = saved.ctrlKey;
+        opts.altKey = saved.altKey;
       }
       else
       {
-        if(!input.I_REGISTRY[environment]) input.I_REGISTRY[environment] = {};
-        
-        const saved = input.I_REGISTRY[environment][name];
-        
-        /* active is used by the engine loop, when active is true it gets added to an action render list, 
-           the engine on next frame will loop through this run the action and remove the active status */
-        options = (options || {});
-        options.active = false;
-        
-        /* if the registry already exists, we simply update the options */
-        if(saved)
-        {
-          options.key = saved.key;
-          options.index = saved.index;
-          options.toggle = saved.toggle;
-          options.shiftKey = saved.shiftKey;
-          options.ctrlKey = saved.ctrlKey;
-          options.altKey = saved.altKey;
+        /* save the registry item to the json */
+        input.I_REGISTRY[environment][name] = {
+          name: opts.name,
+          key: opts.key,
+          index: opts.index,
+          mode: opts.mode,
+          shiftKey: opts.shiftKey,
+          ctrlKey: opts.ctrlKey,
+          altKey: opts.altKey
         }
-        else
-        {
-          options.key = -1;
-          options.index = -1;
-          
-          /* update the registry with the action */
-          input.I_REGISTRY[environment][name] = {
-            name: options.name,
-            key: options.key,
-            index: options.index,
-            toggle: options.toggle,
-            shiftKey: options.shiftKey,
-            ctrlKey: options.ctrlKey,
-            altKey: options.altKey
-          }
-          /* saves the action to json file */
-          input.save();
-        }
-
-        if(this.active[name]) this.unregister(name, this.active[name].environment);
-
-        if(!this.registry[environment]) this.registry[environment] = {};
-        this.registry[environment][name] = options;
-
-        /* This creates a method for the engine to run to check for if a registered input is active or not */
-        const registry = this.registry[environment][name];
-        this.active[name] = () => {
-          return registry.active;
-        }
-        this.active[name].environment = environment;
+        
+        input.save();
       }
+      
+      this.registry[environment][name] = opts;
+      
+      /* bind saved registry key */
+      if(saved) this.bind(opts, opts.key, opts);
     }
     return this;
   }
   
+  /**
+  * Registers an action to the registry for gui related items and immediately binds it
+  *
+  * @param {String} name the name of the action ex. dev_console
+  * @param {Function} action The method that will be run for the input
+  * @param {Object} options a series of optional requirements
+  * @param options {Boolean} key the key name, can be string or index ex: 'space' or 13
+  * @returns {Input}
+  */
+  registerGuiAction(name, action, options)
+  {
+    const opts = options || {},
+          registry = this.registry.gui,
+          key = opts.key;
+    if(key)
+    {
+      /* If the gui action exists, deregister it */
+      if(registry[name]) this.unregisterGuiAction(name);
+      opts.name = name;
+      opts.environment = 'gui';
+      opts.mode = 1;
+      opts.action = action;
+      opts.immediate = true;
+      opts.key = -1;
+      opts.index = -1;
+      registry[name] = opts;
+      this.bind(registry[name], key, opts);
+    }
+    return this;
+  }
+  
+  /**
+  * unregistered a registered action as well as removes the bind
+  *
+  * @param {String} name the name of the action ex. jump
+  * @param {String} environment the name of the environment this action can occur ex. vehicle, plane etc
+  * @returns {Input}
+  */
   unregister(name, environment) {
     const { input } = nw.global.settings;
 
@@ -238,17 +213,41 @@ class Input {
       const registry = this.registry[environment][name];
       if(registry)
       {
-        if(environment !== 'gui')
-        {
-          input.I_REGISTRY[environment][name] = undefined;
-          input.save();
-        }
-        
         if(registry.key) this.unbind(registry, registry.key);
         this.registry[environment][name] = undefined;
-        if(['*', this.environment].indexOf(environment) !== -1) this.active[name] = undefined;
+        input.I_REGISTRY[environment][name] = undefined;
+        input.save();
       }
     }
+  }
+  
+  /**
+  * unregistered a registered action from the gui registry
+  *
+  * @param {String} name the name of the action ex. jump
+  * @returns {Input}
+  */
+  unregisterGuiAction(name)
+  {
+    const registry = this.registry.gui[name];
+    if(registry)
+    {
+      this.unbind(registry, registry.key);
+      this.registry.gui[name] = undefined;
+    }
+    return this;
+  }
+  
+  /**
+  * returns the registry object
+  *
+  * @param {String} name the name of the action ex. jump
+  * @param {String} environment the name of the environment this action can occur ex. vehicle, plane etc
+  * @returns {Object} registry object
+  */
+  getRegistry(name, environment)
+  {
+    return this.registry[environment] && this.registry[environment][name];
   }
   
   /**
@@ -257,91 +256,149 @@ class Input {
   * @param {Registry Object} registry the registry to bind to
   * @param {Number|String} key the key that can be pressed to activate this registry
   * @param {Object} options a series of optional requirements
-  * @param options {Boolean} update tells the registry to update itself using the passed options
-  * @param options {Boolean} toggle action can be toggled by a key or only active while a key is pressed
+  * @param options {Boolean} shiftKey whether the shift key is required to be pressed also
+  * @param options {Boolean} ctrlKey whether the ctrl key is required to be pressed also
+  * @param options {Boolean} altKey whether the alt key is required to be pressed also
   * @returns {Input}
   */
   bind(registry, key, options) {
     /* import saved keys for a bind */
-    const { input } = nw.global.settings;
-    const sRegistry = (input.I_REGISTRY[registry.environment] && input.I_REGISTRY[registry.environment][registry.name]);
-    const sKey = (sRegistry && sRegistry.key);
+    const { input } = nw.global.settings,
+          env = registry.environment,
+          keyCode = this.keys.indexOf(key.toLowerCase()),
+          opts = options || {};
     
-    /* TODO: shiftKey, altKey, ctrlKey should happen here and not in registry */
-    if(options.update)
+    if(registry.bound) this.unbind(registry, keyCode);
+    if(!this.inputs[keyCode]) this.inputs[keyCode] = [];
+    
+    registry.key = keyCode;
+    registry.index = this.inputs[keyCode].length;
+    registry.shiftKey = opts.shiftKey;
+    registry.ctrlKey = opts.ctrlKey;
+    registry.altKey = opts.altKey;
+    
+    /* add to inputs array for checking during the key event */
+    this.inputs[keyCode].push({
+      action: (registry.action || update.bind(this)),
+      ...registry
+    });
+    
+    if(env !== 'gui')
     {
-      sRegistry.key = key;
-      sRegistry.name = options.name;
-      sRegistry.key = options.key;
-      sRegistry.index = options.index;
-      sRegistry.toggle = options.toggle;
-      sRegistry.shiftKey = options.shiftKey;
-      sRegistry.ctrlKey = options.ctrlKey;
-      sRegistry.altKey = options.altKey;
+      /* update the saved registry */
+      input.I_REGISTRY[env][registry.name] = {
+        name: registry.name,
+        key: registry.key,
+        index: registry.index,
+        mode: registry.mode,
+        shiftKey: registry.shiftKey,
+        ctrlKey: registry.ctrlKey,
+        altKey: registry.altKey
+      }
+
       input.save();
     }
     
-    key = ((sKey !== undefined && !options.update) ? sKey : key);
-    const keyCode = (typeof key === 'number' ? key : this.keys.indexOf(key.toLowerCase()));
-    
-    if(registry.key !== -1) this.unbind(registry, keyCode);
-    if(!this.inputs[keyCode]) this.inputs[keyCode] = [];
-    registry.key = keyCode;
-    registry.index = this.inputs[keyCode].length;
-
-    this.inputs[keyCode].push({
-      registry,
-      action: (registry.action || update.bind(this)),
-      ...options
-    })
     return this;
   }
   
+  /**
+  * unbinds an attached key from a registry
+  *
+  * @param {Registry Object} registry the registry to bind to
+  * @param {Number|String} key the key that can be pressed to activate this registry
+  * @returns {Input}
+  */
   unbind(registry, key) {
-    const { input } = nw.global.settings;
-    const sRegistry = (input.I_REGISTRY[registry.environment] && input.I_REGISTRY[registry.environment][registry.name]);
-    const keyCode = (typeof key === 'number' ? key : this.keys.indexOf(key.toLowerCase()));
+    const { input } = nw.global.settings,
+          keyCode = typeof key === 'number' ? key : this.keys.indexOf(key.toLowerCase()),
+          env = registry.environment;
+    
     this.inputs[keyCode].splice(registry.index, 1);
+    
     registry.key = -1;
     registry.index = -1;
+    registry.shiftKey = false;
+    registry.ctrlKey = false;
+    registry.altKey = false;
     
-    if(sRegistry)
+    if(env !== 'gui')
     {
-      sRegistry.key = -1;
-      sRegistry.index = -1;
+      /* update the saved registry */
+      input.I_REGISTRY[env][registry.name] = {
+        name: registry.name,
+        key: registry.key,
+        index: registry.index,
+        mode: registry.mode,
+        shiftKey: registry.shiftKey,
+        ctrlKey: registry.ctrlKey,
+        altKey: registry.altKey
+      }
+
+      input.save();
     }
   }
   
+  /* The event that is ran for any mouse or keydown event */
   event(e) {
-    const store = this.inputs[e.inputCode],
-          storelen = (store && store.length),
+    
+    /* Get the associated registry for the key */
+    const registry = this.inputs[e.inputCode],
+          registrylen = (registry && registry.length),
+          
+          /* Type of the event that happened */
           down = (['keydown', 'mousedown'].indexOf(e.type) !== -1),
           up = (['keyup', 'mouseup'].indexOf(e.type) !== -1);
-    
-    if(storelen)
+
+    if(registrylen)
     {
       let x = 0,
-          registry,
           reg;
       
-      for(x;x<storelen;x++)
+      for(x;x<registrylen;x++)
       {
-        reg = store[x];
-        registry = reg.registry;
-        if(['*', 'gui', this.environment].indexOf(registry.environment) !== -1)
+        reg = registry[x];
+        
+        /* if the environment is gui related, then it fires immediately acting as a toggle */
+        if(reg.environment === 'gui')
         {
-          if(registry.toggle)
+          if(up && checkEvent(e, reg)) reg.action(e, reg);
+        }
+        
+        /* If the environment is current the action can be performed */
+        else if(['*', this.environment].indexOf(reg.environment) !== -1)
+        {
+          switch(reg.mode)
           {
-            if(up && checkEvent(e, reg)) reg.action(e, registry, reg);
-          }
-          else
-          {
-            reg.action(e, registry, reg);
+            /* Requires user to hold the key for this action to be active */
+            case 0:
+              if(down && checkEvent(e, reg))
+              {
+                this.active.push(reg.action);
+              }
+              else if(up)
+              {
+                this.active.splice(this.active.indexOf(reg.action), 1);
+              }
+              break;
+            /* acts as a toggle, fires on keyup */
+            case 1:
+              if(up && checkEvent(e, reg))
+              {
+                /* overwrite method to remove itself after being ran */
+                let act = () => {
+                  this.active.splice(this.active.indexOf(act), 1);
+                  return reg.action.apply(this, arguments);
+                }
+                this.active.push(act);
+              }
+              break;
           }
         }
       }
     }
     
+    /* add and remove key names from the pressed array */
     if(down)
     {
       this.pressed.push(e.inputKey);
@@ -352,42 +409,71 @@ class Input {
     }
   }
   
+  /* extends the global vue object */
   install(vue) {
+    /* globalize class */
     vue.prototype.$input = this;
-    vue.prototype.$register = this.register.bind(this);
-    vue.prototype.$unregister = this.unregister.bind(this);
-    vue.prototype.$bind = this.bind.bind(this);
-    vue.prototype.$unbind = this.unbind.bind(this);
     vue.prototype.$mouse = this.mouse;
     vue.prototype.$keyboard = this.keyboard;
   }
   
+  /* activates methods and listeners on the global vue object */
   created() {
     const { input } = nw.global.settings;
     
+    /* point I_CURRENT global to pressed array */
     input.I_CURRENT = this.$input.pressed;
     
+    /* attach keyboard events to the document */
     this.$keyboard.attach(document);
     
+    /* listen on the event bus for input registry calls */
     this.$listen('register_input', (opts) => {
-      this.$input.register(opts.name, opts.environment, opts);
+      this.$input.register(opts.name, opts.environment, opts.action, opts);
     })
     
+    /* listen on the event bus for gui input registry calls */
+    this.$listen('register_gui_input', (opts) => {
+      this.$input.registerGuiAction(opts.name, opts.action, opts);
+    })
+    
+    /* listen on the event bus for input deregister calls */
     this.$listen('unregister_input', (opts) => {
       this.$input.unregister(opts.name, opts.environment);
     })
     
+    /* listen on the event bus for gui input deregister calls */
+    this.$listen('unregister_gui_input', (opts) => {
+      this.$input.unregister(opts.name, opts.environment);
+    })
+    
+    /* listen on the event bus for key binds */
     this.$listen('bind_input', (opts) => {
       this.$input.bind(opts.registry, opts.key, opts);
     });
     
+    /* listen on the event bus for key unbinds */
     this.$listen('unbind_input', (opts) => {
       this.$input.unbind(opts.registry, opts.key);
     });
     
+    /* In case of a application blur, remove all pressed keys */
     window.addEventListener('blur', () => {
       this.$input.pressed.splice(0, this.$input.pressed.length);
-    }, false)
+    }, false);
+    
+    /* runs on the update loop for each frame */
+    this.$pipe(() => {
+      const { active } = this.$input,
+            len = active.length;
+
+      let x = 0;
+      for(x;x<len;x++)
+      {
+        /* run active key methods, pass the engine to them */
+        active[x](this.$engine);
+      }
+    })
   }
 }
 

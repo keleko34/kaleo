@@ -14,6 +14,7 @@ const ENGINE = Object.assign({
   save
 }, settings)
 
+/* Saves the associated settings object to the json file */
 function save() {
   
   const content = JSON.stringify(ENGINE, (key, value) => {

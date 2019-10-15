@@ -14,9 +14,13 @@ global.gl = null;
 global.main = new Engine({
   /* TODO: Need to remove debug on prod build */
   debug: true,
+  
+  /* Main renderer */
   renderer: new Renderer(),
   data: {},
   created() {
+    
+    /* run associated plugin methods and add root */
     Engine._installedPlugins.forEach((plugin) => {
       if(plugin.extend) plugin.extend.call(this);
       if(plugin.created) plugin.created.call(this);

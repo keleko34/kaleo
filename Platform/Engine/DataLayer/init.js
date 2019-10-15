@@ -1,3 +1,4 @@
+/* condense all settings to a single settings object */
 if(!global.settings) global.settings = {};
 global.settings.graphics = require('./graphics');
 global.settings.engine = require('./engine');

@@ -8,6 +8,7 @@ const MOUSEKEYBOARD = Object.assign({
   save
 }, settings);
 
+/* Saves the associated settings object to the json file, includes all user key bindings */
 function save() {
   
   const content = JSON.stringify(MOUSEKEYBOARD, (key, value) => {

@@ -52,10 +52,8 @@ export default {
         /* each item should be toggle type key, meaning the action happens once on keypress,
            environment is gui which takes special precedence over all other environments */
         lKey = opt.key.toLowerCase();
-        this.$register(opt.text, 'gui', {
+        this.$input.registerGuiAction(opt.text, opt.action, {
           key: lKey.replace(/(ctrl)|(alt)|(shift)|[\s+]/g, ''),
-          toggle: true,
-          action: opt.action,
           shiftKey: lKey.indexOf('shift') !== -1,
           ctrlKey: lKey.indexOf('ctrl') !== -1,
           altKey: lKey.indexOf('alt') !== -1

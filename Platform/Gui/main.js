@@ -11,6 +11,7 @@ Vue.config.productionTip = false;
 /* TODO: TOGGLE FOR BUILD */
 Vue.config.devtools = true;
 
+/* vue plugins */
 Vue.use(eventbus);
 Vue.use(window);
 Vue.use(viewport);
@@ -23,6 +24,8 @@ new Vue({
     debug: false
   },
   created() {
+    
+    /* run associated plugin methods and add root */
     Vue._installedPlugins.forEach((plugin) => {
       plugin.$root = this;
       

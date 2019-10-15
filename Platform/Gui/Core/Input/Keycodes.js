@@ -96,7 +96,9 @@ class Keycodes {
     this.codes[106] = (this.codes[106] === undefined ? 'multiply' : this.codes[106]);
     this.codes[109] = (this.codes[109] === undefined ? 'subtract' : this.codes[109]);
     this.codes[107] = (this.codes[107] === undefined ? 'add' : this.codes[107]);
-  }  
+  }
+  
+  /* specify a specialized key code and name */
   setKeyCode(code, str)
   {
     if(((typeof code === 'number') && (typeof str === 'string')) && code < 255 && code > -1) {

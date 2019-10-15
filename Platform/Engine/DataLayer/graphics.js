@@ -4,7 +4,7 @@ const local = process.cwd().replace(/\\/g, '/');
 
 nw.Screen.Init();
 
-const { screens } = nw.Screen
+const { screens } = nw.Screen;
 
 /* POSSIBLE RESOLUTIONS */
 const R_LIST = [
@@ -29,13 +29,17 @@ if(!settings.R_WIDTH || !settings.R_HEIGHT)
 {
   /* we can use this later to add multiple monitor setup */
   const monitor1 = screens[0];
+  
+  /* get the dimensions from the main monitor */
   GRAPHICS.R_WIDTH = (monitor1.bounds.width * monitor1.scaleFactor);
   GRAPHICS.R_HEIGHT = (monitor1.bounds.height * monitor1.scaleFactor);
+  
+  /* set resolution index */
   GRAPHICS.R_INDEX = (R_LIST.findIndex(v => (v.w === settings.R_WIDTH && v.h === settings.R_HEIGHT)) || 0);
   save();
 }
 
-/* METHODS */
+/* Saves the associated settings object to the json file */
 function save() {
   
   const content = JSON.stringify(GRAPHICS, (key, value) => {
@@ -48,6 +52,7 @@ function save() {
   })
 }
 
+/* reruns the renderers setup when the resolution updates */
 function update() { global.main.renderer.setup(); }
 
 module.exports = GRAPHICS;
