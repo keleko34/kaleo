@@ -279,7 +279,7 @@ class Input {
     
     /* add to inputs array for checking during the key event */
     this.inputs[keyCode].push({
-      action: (registry.action || update.bind(this)),
+      action: registry.action,
       ...registry
     });
     
