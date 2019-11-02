@@ -34,3 +34,13 @@ Platform
 The app will be built into a final runnable executable in the /Distribution folder.
 
 The current builds are: `win32`, `win64`, and `osx64`
+
+## Extra Information
+This app takes advantage of the nwjs contexts by splitting the gui and engine code.
+
+- The gui lives on the frontend context
+- The engine lives on the backend context
+- They both share data through memory shared globals
+
+Read more:
+http://docs.nwjs.io/en/latest/For%20Users/Advanced/JavaScript%20Contexts%20in%20NW.js/

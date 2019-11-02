@@ -23,23 +23,21 @@ class Shader {
     
     this.vShader = new Vertex(name, isPath ? src : src[0], isPath);
     this.fShader = new Fragment(name, isPath ? src : src[1], isPath);
-    
-    /* fetches the shader files */
-    let fetched = 0;
-    this.vShader.onFetched(() => { fetched += 1; this.fetched = (fetched === 2); });
-    this.fShader.onFetched(() => { fetched += 1; this.fetched = (fetched === 2); });
+  }
+  
+  fetch() {
+    return new Promise((resolve, reject) => {
+      this.vShader.fetch()
+      .then(() => this.fShader.fetch())
+      .then(resolve)
+      .catch((err) => reject(err))
+    })
   }
   
   compileShaders() {
-    if(this.fetched) {
-      this.vShader.compile();
-      if(!this.vShader.compiled) return this;
-      this.fShader.compile();
-      if(!this.fShader.compiled) { gl.deleteShader(this.vShader.compiled); return this; }
-      this.compiled = true;
-      return this.createShaderProgram();
-    }
-    return this;
+    if(!this.vShader.compileShader()) return console.error('Failed to compile vertex shader', this.path);
+    if(!this.fShader.compileShader()) return console.error('Failed to compile fragment shader', this.path);
+    this.compiled = true;
   }
   
   createShaderProgram() {
@@ -163,11 +161,11 @@ class Shader {
     gl.attachShader(program, vShader);
     gl.attachShader(program, fShader);
     
-    if(tfVar != null) gl.transformFeedbackVaryings(program, tfVar, tfInt ? gl.INTERLEAVED_ATTRIBS : gl.SEPARATE_ATTRIBS);
+    if(tfVar) gl.transformFeedbackVaryings(program, tfVar, tfInt ? gl.INTERLEAVED_ATTRIBS : gl.SEPARATE_ATTRIBS);
     
     gl.linkProgram(program);
     
-    if(!gl.getPrograParameter(program, gl.LINK_STATUS)) { gl.deleteProgram(program); return null; }
+    if(!gl.getProgramParameter(program, gl.LINK_STATUS)) { gl.deleteProgram(program); return null; }
     
     if(doValidate) {
       gl.validateProgram(program);

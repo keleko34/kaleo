@@ -1,11 +1,15 @@
 const { graphics } = global.settings;
+const Camera = require('./Camera'),
+      Shader = require('./Shaders/Shader');
+
 const test = require('./../Test/Test');
-const Camera = require('./Camera');
 
 class Renderer {
   constructor() {
     this.canvas = null;
     this.ctx = null;
+    this.camera = null;
+    
     this.pipeline = [];
   }
   

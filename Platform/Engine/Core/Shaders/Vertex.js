@@ -18,46 +18,48 @@ class Vertex {
   constructor(name = 'untitled_vertex', src, isPath) {    
     this.name = name;
     this.type = gl.VERTEX_SHADER;
-    this.file = isPath? src + '/Fragment.shader' : null;
+    this.file = isPath? src.replace(/\\/g, '/') + '/Vertex.glsl' : null;
     this.src = isPath ? def : src;
     
     this.compiled = null;
-    this.onFetched = () => {};
-    
-    if(isPath) {
-      fs.readFile(this.file, (err, contents) => {
-        if(err) return console.error('Failed to fetch', this.file);
-        this.src = contents;
-        this.onFetched();
-      })
-    }
   }
   
-  onFetched(func) {
-    if(this.src !== def) return func(this.compiled);
-    this.onFetched = func;
+  fetch() {
+    return new Promise((resolve, reject) => {
+      if(!this.file) return resolve();
+      fs.readFile(this.file, 'utf8', (err, contents) => {
+        if(err) return reject(err);
+        this.src = contents;
+        resolve(contents);
+      })
+    });
   }
   
   compileShader() {
     const shader = gl.createShader(this.type);
     gl.shaderSource(shader, this.src);
     gl.compileShader(shader);
-    if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) { gl.deleteShader(shader); return null; }
+    if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+    {
+      gl.deleteShader(shader);
+      console.error(gl.getShaderInfoLog(shader));
+      return null;
+    }
     this.compiled = shader;
     return shader;
   }
   
-  static fetchShader(path) {
+  static fetch(path) {
     return new Promise((resolve, reject) => {
-      fs.readFile(path + '/Fragment.shader', (err, contents) => {
+      fs.readFile(path + '/Vertex.glsl', 'utf8', (err, contents) => {
         if(err) reject(err);
         resolve(contents);
       })
     })
   }
   
-  static fetchShaderSync(path) {
-    return fs.readFileSync(path + '/Fragment.shader');
+  static fetchSync(path) {
+    return fs.readFileSync(path + '/Vertex.glsl', 'utf8');
   }
   
   static compileShader(src) {
