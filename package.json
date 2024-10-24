@@ -29,7 +29,7 @@
   "dependencies": {
     "core-js": "2.6.0",
     "nw": "0.41.2-sdk",
-    "vue": "2.6.10"
+    "vue": "3.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.7.0",
